@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portafolio – Cultura Digital 2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&family=Exo+2:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:      #050d1a;
+      --deep:      #0a1628;
+      --mid:       #0f2248;
+      --accent:    #1a3a7a;
+      --glow:      #2563eb;
+      --bright:    #60a5fa;
+      --white:     #f0f6ff;
+      --card-bg:   #ffffff;
+      --card-text: #111111;
+      --black-con: #0a0a0a;
+      --footer:    #060f1e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Exo 2', sans-serif;
+      background: var(--black-con);
+      color: var(--white);
+    }
+
+    /* ───── PORTADA ───── */
+    .cover {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 20% 50%, #1a3a7a55 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, #0f224890 0%, transparent 55%),
+        linear-gradient(160deg, var(--navy) 0%, var(--deep) 40%, var(--mid) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 20px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* decorative grid lines */
+    .cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(37,99,235,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37,99,235,.08) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    /* glowing circle */
+    .cover::after {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      border: 1px solid rgba(96,165,250,.15);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulse 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes pulse {
+      0%,100% { transform: translate(-50%,-50%) scale(1);   opacity:.4; }
+      50%      { transform: translate(-50%,-50%) scale(1.08); opacity:.9; }
+    }
+
+    .cover-inner {
+      position: relative;
+      z-index: 2;
+      animation: fadeUp .9s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .label-portfolio {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .85rem;
+      font-weight: 300;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--bright);
+      margin-bottom: 14px;
+      opacity: .85;
+    }
+
+    .title-main {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2.6rem, 7vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--white);
+      text-shadow: 0 0 40px rgba(96,165,250,.5), 0 0 80px rgba(37,99,235,.3);
+      margin-bottom: 18px;
+      letter-spacing: .04em;
+    }
+
+    .title-main span {
+      color: var(--bright);
+    }
+
+    .speciality {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(224,242,254,.75);
+      margin-bottom: 32px;
+    }
+
+    .divider {
+      width: 120px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--glow), transparent);
+      margin: 0 auto 28px;
+    }
+
+    .author {
+      font-family: 'Exo 2', sans-serif;
+      font-size: .95rem;
+      color: rgba(200,220,255,.65);
+      letter-spacing: .1em;
+      margin-bottom: 48px;
+    }
+
+    .author em { color: var(--bright); font-style: normal; font-weight: 700; }
+
+    /* redes sociales */
+    .socials {
+      display: flex;
+      gap: 28px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 26px;
+      border: 1px solid rgba(96,165,250,.35);
+      border-radius: 40px;
+      background: rgba(10,22,40,.6);
+      color: var(--bright);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .95rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-decoration: none;
+      backdrop-filter: blur(8px);
+      transition: all .3s ease;
+    }
+
+    .social-btn:hover {
+      background: rgba(37,99,235,.3);
+      border-color: var(--bright);
+      box-shadow: 0 0 20px rgba(96,165,250,.3);
+      transform: translateY(-2px);
+    }
+
+    .social-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+    /* ───── CONTENEDOR CARDS ───── */
+    .cards-section {
+      background: var(--black-con);
+      padding: 70px 40px;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--bright);
+      text-align: center;
+      margin-bottom: 50px;
+      opacity: .8;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 28px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card-bg);
+      color: var(--card-text);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 30px rgba(0,0,0,.5);
+      display: flex;
+      flex-direction: column;
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(37,99,235,.25);
+    }
+
+    .card-thumb {
+      height: 160px;
+      background: linear-gradient(135deg, #1a3a7a, #0f2248);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      color: rgba(96,165,250,.6);
+      font-weight: 900;
+    }
+
+    .card-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-number {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .65rem;
+      letter-spacing: .25em;
+      color: #2563eb;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: .85rem;
+      color: #555;
+      line-height: 1.5;
+      flex: 1;
+      margin-bottom: 18px;
+    }
+
+    .btn-task {
+      align-self: flex-start;
+      padding: 9px 22px;
+      background: #1a3a7a;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .9rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .25s, box-shadow .25s;
+    }
+
+    .btn-task:hover {
+      background: #2563eb;
+      box-shadow: 0 4px 14px rgba(37,99,235,.45);
+    }
+
+    /* ───── PIE DE PÁGINA ───── */
+    footer {
+      background: var(--footer);
+      border-top: 1px solid rgba(37,99,235,.25);
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    .footer-line {
+      width: 60px; height: 2px;
+      background: var(--glow);
+      margin: 0 auto 28px;
+    }
+
+    .footer-school {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .8rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--bright);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+
+    .footer-info {
+      font-family: 'Exo 2', sans-serif;
+      font-size: .85rem;
+      color: rgba(200,220,255,.55);
+      line-height: 2;
+    }
+
+    .footer-info strong {
+      color: rgba(200,220,255,.85);
+      font-weight: 600;
+    }
+
+    .footer-copy {
+      margin-top: 24px;
+      font-size: .72rem;
+      color: rgba(255,255,255,.2);
+      letter-spacing: .12em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════ PORTADA ═══════════ -->
+  <header class="cover">
+    <div class="cover-inner">
+      <p class="label-portfolio">Portafolio</p>
+
+      <h1 class="title-main">Cultura<br/><span>Digital&nbsp;2</span></h1>
+
+      <p class="speciality">Inteligencia Artificial</p>
+
+      <div class="divider"></div>
+
+      <p class="author">by <em>Josw G</em></p>
+
+      <!-- Redes sociales -->
+      <div class="socials">
+        <a href="https://www.facebook.com/william gomez" class="social-btn" target="_blank">
+          <!-- Facebook icon -->
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
+          </svg>
+          Facebook
+        </a>
+
+        <a href="https://www.Instagram.com/wil_l2221" class="social-btn" target="_blank">
+          <!-- Instagram icon -->
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+          </svg>
+          Instagram
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════ SECCIÓN CARDS ═══════════ -->
+  <main class="cards-section">
+    <p class="section-title">── Tareas &amp; Actividades ──</p>
+
+    <div class="cards-grid">
+
+      <!-- Card 1 -->
+      <div class="card">
+        <div class="card-img-wrap">
+          <img src="imagenes/tim.jpg" width="100%" height="">
+
+          <p class="card-number">TAREA · 01</p>
+          <h3 class="card-title">El padre del internet</h3>
+          <p class="card-desc">Tim berners lee es considerado el padre del internet, creador de la www</p>
+          <a href="tarea1.html" class="btn-task">Ver tarea</a>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card">
+       <div class="card-img-wrap">
+          <img src="imagenes/lenguajes.jpg" width="100%" height="">
+          <p class="card-number">TAREA · 02</p>
+          <h3 class="card-title">Lenguajes de diseño y programacion</h3>
+          <p class="card-desc">existen diferentes lenguajes cada uno con un enfoque especifico, existen lenguajes de diseño y maquetacion y lenguajes de ´programcion</p>
+          <a href="tarea2.html" class="btn-task">Ver tarea</a>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card">
+        <div class="card-img-wrap">
+          <img src="imagenes/html.jpg" width="100%" height="50%">
+          <p class="card-number">TAREA · 03</p>
+          <h3 class="card-title">guia para aprender html5</h3>
+          <p class="card-desc">una guia para aprender todo sobre html desde cero y comprender el lenguaje</p>
+          <a href="tarea3.html" class="btn-task">Ver tarea</a>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="card">
+        <div class="card-img-wrap">
+          <img src="imagenes/css3.jpg" width="100%" height="">
+          <p class="card-number">TAREA · 04</p>
+          <h3 class="card-title">guia para aprender css3</h3>
+          <p class="card-desc">guia para aprender desde cero a usar css3 y conocer acerca del programa</p>
+          <a href="tarea4.html" class="btn-task">Ver tarea</a>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="card">
+        <div class="card-thumb">05</div>
+        <div class="card-body">
+          <p class="card-number">TAREA · 05</p>
+          <h3 class="card-title">Visión por Computadora</h3>
+          <p class="card-desc">Detección de objetos, reconocimiento facial y análisis de imágenes con IA.</p>
+          <a href="#" class="btn-task">Ver tarea</a>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="card">
+        <div class="card-thumb">06</div>
+        <div class="card-body">
+          <p class="card-number">TAREA · 06</p>
+          <h3 class="card-title">Ética en la IA</h3>
+          <p class="card-desc">Reflexión sobre el impacto social, sesgos algorítmicos y responsabilidad tecnológica.</p>
+          <a href="#" class="btn-task">Ver tarea</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ═══════════ PIE DE PÁGINA ═══════════ -->
+  <footer>
+    <div class="footer-line"></div>
+
+    <p class="footer-school">
+      Centro de Bachillerato Tecnológico<br/>
+      Industrial y de Servicios No. 144
+    </p>
+
+    <div class="footer-info">
+      <p><strong>Especialidad:</strong> Inteligencia Artificial</p>
+      <p><strong>Alumno:</strong> Jose William Gomez Sanchez</p>
+      <p><strong>Docente:</strong> Jordy Chirino Balcazar</p>
+    </div>
+
+    <p class="footer-copy">Cultura Digital 2 &nbsp;·&nbsp; Portafolio Escolar</p>
+  </footer>
+
+</body>
+</html>

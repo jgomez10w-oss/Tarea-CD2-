@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tarea 01 – Tim Berners-Lee</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:    #050d1a;
+      --deep:    #0a1628;
+      --mid:     #0f2248;
+      --accent:  #1a3a7a;
+      --glow:    #2563eb;
+      --bright:  #60a5fa;
+      --white:   #f0f6ff;
+      --black:   #0a0a0a;
+      --footer:  #060f1e;
+      --text:    #cbd5e1;
+      --text-dim:#64748b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Exo 2', sans-serif;
+      background: var(--black);
+      color: var(--white);
+    }
+
+    /* ── BOTÓN ATRÁS ── */
+    .back-btn {
+      position: fixed;
+      top: 22px;
+      left: 22px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: rgba(5,13,26,.75);
+      border: 1px solid rgba(96,165,250,.3);
+      border-radius: 40px;
+      color: var(--bright);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .9rem;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-decoration: none;
+      backdrop-filter: blur(12px);
+      transition: all .3s ease;
+    }
+    .back-btn:hover {
+      background: rgba(37,99,235,.25);
+      border-color: var(--bright);
+      box-shadow: 0 0 18px rgba(96,165,250,.25);
+      transform: translateX(-3px);
+    }
+    .back-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ── PORTADA TAREA ── */
+    .hero {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 70% 30%, rgba(37,99,235,.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 10% 80%, rgba(15,34,72,.9) 0%, transparent 50%),
+        linear-gradient(200deg, #020810 0%, #071022 35%, #0a1e40 70%, #071530 100%);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 80px 8% 60px;
+      position: relative;
+      overflow: hidden;
+      gap: 40px;
+    }
+
+    /* diagonal decorative stripe */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        -55deg,
+        transparent,
+        transparent 80px,
+        rgba(37,99,235,.03) 80px,
+        rgba(37,99,235,.03) 81px
+      );
+      pointer-events: none;
+    }
+
+    /* corner bracket top-right */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 40px; right: 40px;
+      width: 80px; height: 80px;
+      border-top: 2px solid rgba(96,165,250,.3);
+      border-right: 2px solid rgba(96,165,250,.3);
+      pointer-events: none;
+    }
+
+    /* corner bracket bottom-left */
+    .corner-bl {
+      position: absolute;
+      bottom: 40px; left: 40px;
+      width: 80px; height: 80px;
+      border-bottom: 2px solid rgba(96,165,250,.3);
+      border-left: 2px solid rgba(96,165,250,.3);
+      pointer-events: none;
+    }
+
+    .hero-text {
+      animation: slideRight .9s ease both;
+    }
+
+    @keyframes slideRight {
+      from { opacity: 0; transform: translateX(-40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(37,99,235,.15);
+      border: 1px solid rgba(96,165,250,.25);
+      border-radius: 4px;
+      padding: 5px 14px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .25em;
+      color: var(--bright);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .hero-tag::before {
+      content: '';
+      display: block;
+      width: 6px; height: 6px;
+      background: var(--bright);
+      border-radius: 50%;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+    .hero-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 900;
+      line-height: 1.05;
+      margin-bottom: 10px;
+      color: var(--white);
+      text-shadow: 0 0 60px rgba(96,165,250,.3);
+    }
+
+    .hero-name .highlight { color: var(--bright); }
+
+    .hero-subtitle {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      letter-spacing: .2em;
+      color: rgba(148,163,184,.7);
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    .hero-desc {
+      font-size: .95rem;
+      color: var(--text);
+      line-height: 1.75;
+      max-width: 480px;
+      margin-bottom: 36px;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .meta-label {
+      font-size: .65rem;
+      letter-spacing: .2em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+    .meta-value {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--bright);
+    }
+
+    /* portrait side */
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: slideLeft .9s ease both;
+    }
+
+    @keyframes slideLeft {
+      from { opacity: 0; transform: translateX(40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .portrait-frame {
+      position: relative;
+      width: clamp(240px, 30vw, 360px);
+      aspect-ratio: 3/4;
+    }
+
+    /* outer glow ring */
+    .portrait-frame::before {
+      content: '';
+      position: absolute;
+      inset: -12px;
+      border: 1px solid rgba(96,165,250,.2);
+      border-radius: 16px;
+    }
+    /* accent line */
+    .portrait-frame::after {
+      content: '';
+      position: absolute;
+      left: -20px;
+      top: 20%;
+      width: 4px;
+      height: 60%;
+      background: linear-gradient(180deg, transparent, var(--glow), transparent);
+      border-radius: 4px;
+    }
+
+    .portrait-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #0f2248 0%, #1a3a7a 40%, #0a1628 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(96,165,250,.15);
+    }
+
+    /* SVG silhouette illustration */
+    .portrait-inner svg.figure {
+      width: 65%;
+      opacity: .85;
+    }
+
+    .portrait-badge {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(5,13,26,.85);
+      border: 1px solid rgba(96,165,250,.3);
+      border-radius: 6px;
+      padding: 8px 18px;
+      text-align: center;
+      white-space: nowrap;
+      backdrop-filter: blur(8px);
+    }
+    .portrait-badge span {
+      display: block;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .15em;
+      color: var(--bright);
+      text-transform: uppercase;
+    }
+    .portrait-badge strong {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .7rem;
+      color: rgba(200,220,255,.6);
+      font-weight: 400;
+      letter-spacing: .05em;
+    }
+
+    /* hexagonal grid decoration */
+    .hex-deco {
+      position: absolute;
+      top: 15px;
+      right: -30px;
+      opacity: .12;
+    }
+
+    /* ── SCROLL INDICATOR ── */
+    .scroll-hint {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .7rem;
+      letter-spacing: .2em;
+      color: rgba(96,165,250,.4);
+      text-transform: uppercase;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+    .scroll-hint svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+
+    /* ── ARTICLE CONTENT ── */
+    .content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 80px 30px;
+    }
+
+    .section-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .72rem;
+      letter-spacing: .3em;
+      color: var(--bright);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      opacity: .75;
+    }
+
+    .section-heading {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(37,99,235,.25);
+    }
+
+    .section-heading span { color: var(--bright); }
+
+    p.body-text {
+      font-size: .97rem;
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 18px;
+    }
+
+    /* timeline */
+    .timeline {
+      margin: 48px 0;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 18px;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--glow), rgba(37,99,235,.1));
+    }
+
+    .tl-item {
+      display: flex;
+      gap: 28px;
+      margin-bottom: 36px;
+      animation: fadeUp .6s ease both;
+    }
+
+    .tl-dot {
+      flex-shrink: 0;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--deep);
+      border: 2px solid var(--glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: .5rem;
+      font-weight: 700;
+      color: var(--bright);
+      letter-spacing: .03em;
+      z-index: 1;
+    }
+
+    .tl-body { padding-top: 6px; }
+
+    .tl-year {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .7rem;
+      color: var(--bright);
+      letter-spacing: .15em;
+      margin-bottom: 4px;
+    }
+
+    .tl-title {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+
+    .tl-text {
+      font-size: .88rem;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* quote block */
+    .quote-block {
+      margin: 48px 0;
+      padding: 30px 36px;
+      background: rgba(10,22,40,.6);
+      border-left: 3px solid var(--glow);
+      border-radius: 0 10px 10px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .quote-block::before {
+      content: '"';
+      position: absolute;
+      top: -10px; left: 20px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 6rem;
+      color: rgba(37,99,235,.1);
+      line-height: 1;
+      pointer-events: none;
+    }
+    .quote-text {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--white);
+      line-height: 1.6;
+      font-style: italic;
+      margin-bottom: 12px;
+    }
+    .quote-author {
+      font-size: .8rem;
+      color: var(--bright);
+      letter-spacing: .12em;
+    }
+
+    /* info cards */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+      margin: 40px 0;
+    }
+
+    .info-card {
+      background: rgba(10,22,40,.7);
+      border: 1px solid rgba(37,99,235,.2);
+      border-radius: 10px;
+      padding: 22px;
+      transition: border-color .3s, box-shadow .3s;
+    }
+    .info-card:hover {
+      border-color: rgba(96,165,250,.45);
+      box-shadow: 0 4px 20px rgba(37,99,235,.2);
+    }
+    .info-card-icon {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+    }
+    .info-card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .65rem;
+      letter-spacing: .18em;
+      color: var(--bright);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .info-card-text {
+      font-size: .88rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* contribution list */
+    .contrib-list {
+      list-style: none;
+      margin: 28px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .contrib-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: .95rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .contrib-list li::before {
+      content: '›';
+      color: var(--bright);
+      font-size: 1.4rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .contrib-list li strong { color: var(--white); }
+
+    /* divider */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(37,99,235,.4), transparent);
+      margin: 56px 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--footer);
+      border-top: 1px solid rgba(37,99,235,.25);
+      padding: 40px 30px;
+      text-align: center;
+    }
+    .footer-line {
+      width: 60px; height: 2px;
+      background: var(--glow);
+      margin: 0 auto 28px;
+    }
+    .footer-school {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .8rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--bright);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+    .footer-info {
+      font-family: 'Exo 2', sans-serif;
+      font-size: .85rem;
+      color: rgba(200,220,255,.55);
+      line-height: 2;
+    }
+    .footer-info strong { color: rgba(200,220,255,.85); font-weight: 600; }
+    .footer-copy {
+      margin-top: 24px;
+      font-size: .72rem;
+      color: rgba(255,255,255,.2);
+      letter-spacing: .12em;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width: 700px) {
+      .hero { grid-template-columns: 1fr; padding: 100px 6% 60px; }
+      .hero-visual { order: -1; }
+      .portrait-frame { width: 200px; }
+      .hero-meta { gap: 20px; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BOTÓN ATRÁS -->
+  <a href="INDEX.html" class="back-btn">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    Portafolio
+  </a>
+
+  <!-- ══════════ PORTADA TAREA ══════════ -->
+  <header class="hero">
+    <div class="corner-bl"></div>
+
+    <div class="hero-text">
+      <div class="hero-tag">Tarea 01 &nbsp;·&nbsp; Cultura Digital 2</div>
+
+      <h1 class="hero-name">
+        Tim<br/>
+        <span class="highlight">Berners-Lee</span>
+      </h1>
+
+      <p class="hero-subtitle">El Padre de la World Wide Web</p>
+
+      <p class="hero-desc">
+        El científico e ingeniero británico que, en 1989, transformó para siempre
+        la forma en que la humanidad comparte, accede y construye conocimiento,
+        regalándole al mundo la World Wide Web de forma gratuita y abierta.
+      </p>
+
+      <div class="hero-meta">
+        <div class="meta-item">
+          <span class="meta-label">Nacimiento</span>
+          <span class="meta-value">8 Jun · 1955</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Nacionalidad</span>
+          <span class="meta-value">Británico</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Invención</span>
+          <span class="meta-value">WWW · 1989</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Premio</span>
+          <span class="meta-value">Turing · 2016</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- retrato ilustrado SVG -->
+    <div class="hero-visual">
+      <div class="portrait-frame">
+
+        <!-- hex deco background -->
+        <svg class="hex-deco" width="120" height="200" viewBox="0 0 120 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="60,5 110,32.5 110,87.5 60,115 10,87.5 10,32.5" stroke="#60a5fa" stroke-width="1" fill="none"/>
+          <polygon points="60,90 110,117.5 110,172.5 60,200 10,172.5 10,117.5" stroke="#60a5fa" stroke-width="1" fill="none"/>
+        </svg>
+
+        <div class="portrait-inner" style="background:none; border:none;">
+          <img src="data:image/webp;base64,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"
+               alt="Tim Berners-Lee"
+               style="width:100%; height:100%; object-fit:cover; object-position:center top; border-radius:12px; display:block;"/>
+          <div class="portrait-badge">
+            <span>Tim Berners-Lee</span>
+            <strong>b. 1955 · Londres, Reino Unido</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      Leer nota
+    </div>
+  </header>
+
+  <!-- ══════════ CONTENIDO ══════════ -->
+  <main class="content">
+
+    <!-- QUIÉN ES -->
+    <p class="section-label">// 01</p>
+    <h2 class="section-heading">¿Quién es <span>Tim Berners-Lee</span>?</h2>
+
+    <p class="body-text">
+      Sir Timothy John Berners-Lee, nacido el 8 de junio de 1955 en Londres, Inglaterra, es un
+      físico, científico computacional e ingeniero de software británico. Es conocido mundialmente
+      como el inventor de la <strong style="color:var(--white)">World Wide Web (WWW)</strong>, el sistema de información que
+      revolucionó la comunicación global y sentó las bases del internet moderno tal como lo conocemos hoy.
+    </p>
+
+    <p class="body-text">
+      Sus padres, Conway Berners-Lee y Mary Lee Woods, trabajaron en el desarrollo del
+      primer computador comercial de la historia, el Ferranti Mark 1, lo que marcó profundamente
+      la vocación tecnológica de Tim desde su infancia. Estudió Física en el Queen's College
+      de la Universidad de Oxford, graduándose con honores en 1976.
+    </p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-card-icon">🎓</div>
+        <p class="info-card-title">Educación</p>
+        <p class="info-card-text">Física · Queen's College, Universidad de Oxford (1976)</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🏢</div>
+        <p class="info-card-title">CERN</p>
+        <p class="info-card-text">Laboratorio europeo donde nació la propuesta de la WWW en 1989</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🌐</div>
+        <p class="info-card-title">W3C</p>
+        <p class="info-card-text">Fundó el World Wide Web Consortium para estandarizar la web</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🏆</div>
+        <p class="info-card-title">Premio Turing</p>
+        <p class="info-card-text">El galardón más alto en ciencias computacionales, otorgado en 2016</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- LÍNEA DE TIEMPO -->
+    <p class="section-label">// 02</p>
+    <h2 class="section-heading">Línea del <span>Tiempo</span></h2>
+
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-dot">1955</div>
+        <div class="tl-body">
+          <p class="tl-year">1955</p>
+          <p class="tl-title">Nacimiento en Londres</p>
+          <p class="tl-text">Nace el 8 de junio en el seno de una familia de pioneros de la computación. Desde niño mostró fascinación por los trenes de juguete y la electrónica, construyendo sus propios circuitos.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot">1976</div>
+        <div class="tl-body">
+          <p class="tl-year">1976</p>
+          <p class="tl-title">Graduación en Oxford</p>
+          <p class="tl-text">Obtiene su licenciatura en Física con honores de primera clase en el Queen's College. Su formación científica rigurosa influirá en su enfoque sistemático hacia los problemas de información.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot">1980</div>
+        <div class="tl-body">
+          <p class="tl-year">1980</p>
+          <p class="tl-title">Primer prototipo: ENQUIRE</p>
+          <p class="tl-text">Durante su primera estancia en el CERN desarrolla ENQUIRE, un programa para gestionar información mediante hipervínculos. Este sería el embrión conceptual de la World Wide Web.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot">1989</div>
+        <div class="tl-body">
+          <p class="tl-year">1989</p>
+          <p class="tl-title">La propuesta que cambió el mundo</p>
+          <p class="tl-text">Presenta ante el CERN el documento <em style="color:var(--bright)">"Information Management: A Proposal"</em>. Su jefe, Mike Sendall, anotó al margen: <em>"Vague but exciting"</em> (Vago pero emocionante). Esta propuesta sentaría las bases de la WWW.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot">1990</div>
+        <div class="tl-body">
+          <p class="tl-year">1990</p>
+          <p class="tl-title">Primer servidor y navegador web</p>
+          <p class="tl-text">Escribe los tres pilares fundamentales de la web: <strong style="color:var(--white)">HTML</strong> (lenguaje de marcado), <strong style="color:var(--white)">HTTP</strong> (protocolo de transferencia) y las <strong style="color:var(--white)">URL</strong> (sistema de direcciones). En diciembre activa el primer servidor web de la historia.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot">1991</div>
+        <div class="tl-body">
+          <p class="tl-year">1991</p>
+          <p class="tl-title">La web llega al público</p>
+          <p class="tl-text">El 6 de agosto publica la primera página web del mundo en el CERN, describiendo el proyecto de la WWW. Más importante aún: decide liberar la tecnología de forma completamente gratuita y de dominio público.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot">1994</div>
+        <div class="tl-body">
+          <p class="tl-year">1994</p>
+          <p class="tl-title">Fundación del W3C</p>
+          <p class="tl-text">Funda el World Wide Web Consortium (W3C) en el MIT, una organización internacional dedicada a desarrollar estándares abiertos para la web. Hoy regula tecnologías como HTML5, CSS y accesibilidad web.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot">2016</div>
+        <div class="tl-body">
+          <p class="tl-year">2016</p>
+          <p class="tl-title">Premio Turing</p>
+          <p class="tl-text">La ACM le otorga el Premio Turing, considerado el Nobel de las Ciencias Computacionales, por la invención de la World Wide Web, el primer navegador y los protocolos esenciales que permitieron su desarrollo.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- SU LEGADO -->
+    <p class="section-label">// 03</p>
+    <h2 class="section-heading">Sus <span>Contribuciones</span></h2>
+
+    <p class="body-text">
+      Berners-Lee no solo inventó la tecnología; tomó la decisión histórica de cederla
+      al mundo sin cobrar un centavo de regalías. Este acto de generosidad intelectual
+      es considerado uno de los mayores regalos a la humanidad en la era moderna.
+    </p>
+
+    <ul class="contrib-list">
+      <li><div><strong>HTML (HyperText Markup Language):</strong> El lenguaje de marcado que permite estructurar y presentar información en páginas web, base de todo contenido en la internet actual.</div></li>
+      <li><div><strong>HTTP (HyperText Transfer Protocol):</strong> El protocolo de comunicación que permite la transmisión de datos entre servidores y navegadores en toda la web.</div></li>
+      <li><div><strong>URL (Uniform Resource Locator):</strong> El sistema de direcciones únicas que permite localizar cualquier recurso en la red, lo que conocemos como las "direcciones web".</div></li>
+      <li><div><strong>W3C (World Wide Web Consortium):</strong> Organización que vela por la interoperabilidad, accesibilidad y estándares abiertos de la web global.</div></li>
+      <li><div><strong>Web abierta y gratuita:</strong> Su decisión de no patentar la WWW permitió que cualquier persona, empresa o nación pudiera adoptarla sin restricciones económicas ni legales.</div></li>
+      <li><div><strong>Web Semántica:</strong> En años más recientes, impulsa el desarrollo de una web de datos estructurados donde las máquinas puedan interpretar el significado del contenido, no solo mostrarlo.</div></li>
+    </ul>
+
+    <div class="quote-block">
+      <p class="quote-text">
+        La web es más una creación social que técnica. La diseñé para un efecto social,
+        para ayudar a las personas a trabajar juntas, y no como un juguete tecnológico.
+      </p>
+      <p class="quote-author">— Tim Berners-Lee</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- REFLEXIÓN -->
+    <p class="section-label">// 04</p>
+    <h2 class="section-heading">Su <span>Impacto</span> en la Actualidad</h2>
+
+    <p class="body-text">
+      Hoy en día, más de 5,400 millones de personas tienen acceso a internet.
+      Cada búsqueda, mensaje, compra, video, red social o servicio en línea existe
+      gracias a la arquitectura que Tim Berners-Lee diseñó hace más de tres décadas.
+      Su impacto no tiene precedente histórico en la velocidad con que transformó la civilización humana.
+    </p>
+
+    <p class="body-text">
+      Sin embargo, Berners-Lee no permanece satisfecho. Ha sido un crítico
+      activo de la vigilancia masiva, la concentración del poder web en pocas
+      corporaciones y la desinformación. Lidera iniciativas como el
+      <strong style="color:var(--white)">Contract for the Web</strong> y el proyecto
+      <strong style="color:var(--white)">Solid</strong>, que busca devolver a los usuarios
+      el control sobre sus propios datos personales.
+    </p>
+
+    <p class="body-text">
+      Tim Berners-Lee es un recordatorio vivo de que las decisiones tecnológicas
+      son también decisiones éticas y sociales. Su ejemplo demuestra que la innovación
+      más poderosa no es aquella que acumula más riqueza, sino la que empodera a más personas.
+    </p>
+
+  </main>
+
+  <!-- ══════════ PIE DE PÁGINA ══════════ -->
+  <footer>
+    <div class="footer-line"></div>
+    <p class="footer-school">
+      Centro de Bachillerato Tecnológico<br/>
+      Industrial y de Servicios No. 144
+    </p>
+    <div class="footer-info">
+      <p><strong>Especialidad:</strong> Inteligencia Artificial</p>
+      <p><strong>Alumno:</strong> Jose William Gomez Sanchez</p>
+      <p><strong>Docente:</strong> Jordy Chirino Balcazar</p>
+    </div>
+    <p class="footer-copy">Tarea 01 &nbsp;·&nbsp; Tim Berners-Lee &nbsp;·&nbsp; Cultura Digital 2</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lenguajes de Programación — Cultura Digital 2</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink:      #0f0e0d;
+      --ink2:     #2a2825;
+      --ink3:     #5a5650;
+      --paper:    #f5f2ee;
+      --cream:    #ede9e3;
+      --warm:     #e8e2d9;
+      --rule:     #c8c0b4;
+      --accent:   #c0392b;
+      --accent2:  #e67e22;
+      --web-c:    #1a6b3a;
+      --desk-c:   #1a3a6b;
+      --design-c: #6b1a4a;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ─── BACK BTN ─── */
+    .back-btn {
+      position: fixed; top: 20px; left: 20px; z-index: 300;
+      display: flex; align-items: center; gap: 7px;
+      padding: 8px 18px;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .8rem; font-weight: 500; letter-spacing: .08em;
+      text-decoration: none; border-radius: 2px;
+      transition: background .2s, transform .2s;
+    }
+    .back-btn:hover { background: var(--accent); transform: translateX(-2px); }
+    .back-btn svg { width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+
+    /* ─── MASTHEAD ─── */
+    .masthead {
+      border-bottom: 3px solid var(--ink);
+      padding: 90px 60px 0;
+      position: relative;
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    .masthead-kicker {
+      display: inline-block;
+      font-size: .7rem; font-weight: 600;
+      letter-spacing: .3em; text-transform: uppercase;
+      color: var(--accent);
+      border-top: 2px solid var(--accent);
+      padding-top: 6px;
+      margin-bottom: 20px;
+    }
+
+    .masthead-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      line-height: .95;
+      color: var(--ink);
+      max-width: 900px;
+      margin-bottom: 0;
+      letter-spacing: -.02em;
+    }
+
+    .masthead-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .masthead-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 60px;
+      align-items: end;
+      padding-bottom: 40px;
+      margin-top: 36px;
+    }
+
+    .masthead-desc {
+      font-size: 1.05rem;
+      color: var(--ink3);
+      line-height: 1.75;
+      max-width: 560px;
+      border-left: 3px solid var(--rule);
+      padding-left: 20px;
+    }
+
+    .masthead-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .meta-row {
+      display: flex; justify-content: space-between;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 8px;
+      font-size: .78rem;
+    }
+    .meta-row span:first-child { color: var(--ink3); font-weight: 500; letter-spacing:.05em; text-transform:uppercase; font-size:.68rem; }
+    .meta-row span:last-child { color: var(--ink); font-weight: 600; }
+
+    /* category nav strip */
+    .cat-strip {
+      display: flex;
+      border-top: 1px solid var(--ink);
+      background: var(--ink);
+    }
+    .cat-item {
+      flex: 1; padding: 14px 20px;
+      display: flex; align-items: center; gap: 10px;
+      color: var(--paper);
+      font-size: .78rem; font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase;
+      text-decoration: none;
+      border-right: 1px solid rgba(255,255,255,.1);
+      transition: background .2s;
+    }
+    .cat-item:hover { background: rgba(255,255,255,.1); }
+    .cat-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+    /* ─── PAGE LAYOUT ─── */
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 60px;
+    }
+
+    /* ─── SECTION HEADER ─── */
+    .chapter {
+      padding: 70px 0 50px;
+    }
+
+    .chapter-header {
+      display: flex; align-items: center; gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .chapter-number {
+      font-family: 'DM Serif Display', serif;
+      font-size: 5rem; line-height: 1;
+      color: var(--rule);
+      letter-spacing: -.04em;
+      flex-shrink: 0;
+    }
+
+    .chapter-info { flex: 1; }
+
+    .chapter-label {
+      font-size: .68rem; font-weight: 600;
+      letter-spacing: .28em; text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .chapter-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.4rem;
+      line-height: 1.1;
+      letter-spacing: -.02em;
+    }
+
+    .chapter-rule {
+      flex: 1;
+      height: 2px;
+    }
+
+    /* ─── LANGUAGE CARDS ─── */
+    .lang-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--rule);
+      border: 2px solid var(--ink);
+    }
+
+    .lang-card {
+      background: var(--paper);
+      display: flex;
+      flex-direction: column;
+      transition: background .2s;
+      position: relative;
+    }
+    .lang-card:hover { background: var(--cream); }
+
+    /* top color stripe */
+    .card-stripe {
+      height: 5px;
+      width: 100%;
+    }
+
+    .card-top {
+      padding: 24px 24px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      border-bottom: 1px solid var(--warm);
+    }
+
+    /* logo box */
+    .logo-box {
+      width: 64px; height: 64px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1.5px solid var(--warm);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
+    .logo-box img {
+      width: 44px; height: 44px;
+      object-fit: contain;
+    }
+    .logo-box .logo-text {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .card-names { flex: 1; }
+
+    .lang-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.4rem;
+      line-height: 1.1;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+
+    .lang-type {
+      font-size: .7rem; font-weight: 600;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--ink3);
+    }
+
+    .lang-year {
+      font-family: 'Fira Code', monospace;
+      font-size: .75rem;
+      color: var(--rule);
+      background: var(--ink);
+      padding: 3px 8px;
+      border-radius: 2px;
+      align-self: flex-start;
+      flex-shrink: 0;
+    }
+
+    .card-body {
+      padding: 18px 24px;
+      font-size: .88rem;
+      color: var(--ink3);
+      line-height: 1.7;
+      flex: 1;
+    }
+
+    /* tags */
+    .card-tags {
+      padding: 0 24px 16px;
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+    .tag {
+      font-size: .65rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: 3px 9px;
+      border: 1.5px solid var(--rule);
+      border-radius: 2px;
+      color: var(--ink3);
+      background: transparent;
+    }
+
+    /* code */
+    .code-wrap {
+      margin: 0 16px 16px;
+      border: 1.5px solid var(--ink);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .code-bar {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 7px 14px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: 'Fira Code', monospace;
+      font-size: .68rem; letter-spacing: .05em;
+    }
+    .code-dots { display:flex; gap:5px; }
+    .dot { width:9px; height:9px; border-radius:50%; }
+    .dot-r { background:#ef4444; }
+    .dot-y { background:#f59e0b; }
+    .dot-g { background:#22c55e; }
+
+    pre {
+      padding: 16px;
+      font-family: 'Fira Code', monospace;
+      font-size: .76rem;
+      line-height: 1.75;
+      color: var(--ink2);
+      background: #faf8f5;
+      overflow-x: auto;
+      tab-size: 2;
+    }
+
+    /* syntax — light theme */
+    .kw  { color: #9333ea; font-weight:500; }
+    .fn  { color: #0369a1; }
+    .st  { color: #b45309; }
+    .cm  { color: #9ca3af; font-style:italic; }
+    .nm  { color: #065f46; }
+    .tg  { color: #be123c; }
+    .at  { color: #1d4ed8; }
+    .va  { color: #374151; }
+    .pr  { color: #7c3aed; }
+    .cl  { color: #0369a1; font-weight:500; }
+    .op  { color: #374151; }
+
+    /* ─── CHAPTER DIVIDER ─── */
+    .ch-divider {
+      height: 2px;
+      background: linear-gradient(90deg, var(--ink) 40%, transparent);
+      margin: 0 0 0;
+    }
+
+    /* ─── PULL QUOTE ─── */
+    .pull-quote {
+      border-top: 3px double var(--ink);
+      border-bottom: 3px double var(--ink);
+      padding: 32px 0;
+      margin: 50px 0 0;
+      text-align: center;
+    }
+    .pull-quote p {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.3rem, 2.5vw, 1.9rem);
+      font-style: italic;
+      color: var(--ink);
+      max-width: 800px;
+      margin: 0 auto 10px;
+      line-height: 1.4;
+    }
+    .pull-quote cite {
+      font-size: .78rem; font-style:normal;
+      letter-spacing: .12em; text-transform:uppercase;
+      color: var(--ink3);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 50px 60px;
+      margin-top: 80px;
+    }
+    .footer-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 40px; align-items: end;
+    }
+    .footer-school {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .footer-data { font-size: .85rem; color: rgba(245,242,238,.55); line-height: 2.2; }
+    .footer-data strong { color: rgba(245,242,238,.9); font-weight: 500; }
+    .footer-copy {
+      text-align: right;
+      font-size: .72rem; letter-spacing: .12em;
+      color: rgba(245,242,238,.25);
+      align-self: end;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1100px) {
+      .lang-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 750px) {
+      .page { padding: 0 20px; }
+      .masthead { padding: 90px 20px 0; }
+      .masthead-layout { grid-template-columns:1fr; gap:24px; }
+      .masthead-meta { display:none; }
+      .lang-grid { grid-template-columns: 1fr; }
+      .cat-strip { flex-wrap:wrap; }
+      .cat-item { flex: none; width:50%; }
+      .chapter-number { font-size:3.5rem; }
+      .footer { padding: 40px 20px; }
+      .footer-inner { grid-template-columns:1fr; }
+      .footer-copy { text-align:left; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- BACK BTN -->
+<a href="INDEX.html" class="back-btn">
+  <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  Portafolio
+</a>
+
+<!-- ══════ MASTHEAD / PORTADA ══════ -->
+<header class="masthead">
+
+  <span class="masthead-kicker">Tarea 02 · Cultura Digital 2 · Inteligencia Artificial</span>
+
+  <h1 class="masthead-title">
+    Lenguajes de<br/><em>Diseño</em> &amp; Programación
+  </h1>
+
+  <div class="masthead-layout">
+    <p class="masthead-desc">
+      Una guía editorial por los lenguajes que construyen la web moderna, las aplicaciones
+      de escritorio y el diseño digital. Desde la estructura de una página hasta el motor
+      de un videojuego — cada lenguaje es una herramienta con un propósito.
+    </p>
+
+    <div class="masthead-meta">
+      <div class="meta-row">
+        <span>Categorías</span>
+        <span>3 áreas</span>
+      </div>
+      <div class="meta-row">
+        <span>Lenguajes</span>
+        <span>14 tecnologías</span>
+      </div>
+      <div class="meta-row">
+        <span>Materia</span>
+        <span>Cultura Digital 2</span>
+      </div>
+      <div class="meta-row">
+        <span>Especialidad</span>
+        <span>Inteligencia Artificial</span>
+      </div>
+      <div class="meta-row">
+        <span>Alumno</span>
+        <span>Jose W. Gomez</span>
+      </div>
+    </div>
+  </div>
+
+  <nav class="cat-strip">
+    <a href="#web" class="cat-item">
+      <span class="cat-dot" style="background:#1a6b3a"></span>
+      I. Desarrollo Web
+    </a>
+    <a href="#desktop" class="cat-item">
+      <span class="cat-dot" style="background:#1a3a6b"></span>
+      II. Escritorio
+    </a>
+    <a href="#design" class="cat-item">
+      <span class="cat-dot" style="background:#6b1a4a"></span>
+      III. Diseño &amp; Maquetación
+    </a>
+  </nav>
+</header>
+
+
+<!-- ══════ CAPÍTULO I — WEB ══════ -->
+<div class="page">
+<section id="web" class="chapter">
+
+  <div class="chapter-header">
+    <span class="chapter-number">I</span>
+    <div class="chapter-info">
+      <p class="chapter-label" style="color:var(--web-c)">// Categoría 01</p>
+      <h2 class="chapter-title">Desarrollo <em style="font-style:italic;color:var(--web-c)">Web</em></h2>
+    </div>
+    <div class="chapter-rule" style="background:var(--web-c)"></div>
+  </div>
+
+  <div class="lang-grid">
+
+    <!-- HTML5 -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#e44d26"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbD0iI0U0NEQyNiIgZD0iTTE5LjUgMTA5LjVMOS41IDBoMTA5bC0xMCAxMDkuNS00NC41IDEyLjV6Ii8+CjxwYXRoIGZpbGw9IiNGMTY1MjkiIGQ9Ik02NCAxMTguNWwzNi0xMCA4LjUtOTRINjR6Ii8+CjxwYXRoIGZpbGw9IiNFQkVCRUIiIGQ9Ik02NCA1Mkg0NS41bC0xLjUtMTUuNUg2NFYyMS41SDI4bDQgNDQuNUg2NHptMCAzMC41bC0uNS41LTE1LTRMNDcuNSA2NUgzM2wyLjUgMjggMjguNSA4eiIvPgo8cGF0aCBmaWxsPSIjZmZmIiBkPSJNNjQgNTJ2MTVoMTdsLTIgMTktMTUgNHYxNS41bDI4LThMOTYgNTJ6bTAtMzAuNXYxNWgzNEw5OS41IDUySDY0djE1aDMzLjVsLTMuNSAzOC0zMCA4LjVWMTI5bDQ0LTEyLjVMMTE5LjUgMEg2NHoiLz4KPC9zdmc+" alt="HTML5"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">HTML 5</h3>
+          <p class="lang-type">Lenguaje de Marcado</p>
+        </div>
+        <span class="lang-year">1993</span>
+      </div>
+      <p class="card-body">La columna vertebral de toda página web. Define estructura y contenido con etiquetas semánticas. HTML5 trajo canvas, video nativo, geolocalización y APIs de almacenamiento local.</p>
+      <div class="card-tags">
+        <span class="tag">Estructura</span><span class="tag">Semántica</span><span class="tag">SEO</span><span class="tag">Accesibilidad</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>index.html</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre><span class="cm">&lt;!-- Estructura básica --&gt;</span>
+<span class="tg">&lt;!DOCTYPE</span> <span class="at">html</span><span class="tg">&gt;</span>
+<span class="tg">&lt;html</span> <span class="at">lang=</span><span class="st">"es"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;head&gt;</span>
+    <span class="tg">&lt;meta</span> <span class="at">charset=</span><span class="st">"UTF-8"</span><span class="tg">/&gt;</span>
+    <span class="tg">&lt;title&gt;</span>Mi Página<span class="tg">&lt;/title&gt;</span>
+  <span class="tg">&lt;/head&gt;</span>
+  <span class="tg">&lt;body&gt;</span>
+    <span class="tg">&lt;h1&gt;</span>Hola Mundo<span class="tg">&lt;/h1&gt;</span>
+    <span class="tg">&lt;p&gt;</span>Cultura Digital 2<span class="tg">&lt;/p&gt;</span>
+  <span class="tg">&lt;/body&gt;</span>
+<span class="tg">&lt;/html&gt;</span></pre>
+      </div>
+    </div>
+
+    <!-- CSS3 -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#264de4"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbD0iIzE1NzJCNiIgZD0iTTE4LjUgMTA5LjVMOSAwaDExMGwtOS41IDEwOS41TDY0IDEyMnoiLz4KPHBhdGggZmlsbD0iIzMzQTlEQyIgZD0iTTY0IDExMy41bDM2LjUtMTBMMTA5IDIwSDY0eiIvPgo8cGF0aCBmaWxsPSIjZmZmIiBkPSJNNjQgNjZINDVsLTEtMTEuNUg2NFY0M0gzMS41bDMgMzNINjR6bTAgMjIuNWwtLjUuNS0xNC41LTQtMS0xMC41SDM2LjVsMiAyMS41IDI1IDd6Ii8+CjxwYXRoIGZpbGw9IiNFQkVCRUIiIGQ9Ik02NCA2NnYxMWgxNi41bC0xLjUgMTYtMTUgNFYxMDlsMjUtNyAuNS00IDIuNS0yOC41IDEtMy41em0xLTIzdjExaDMyLjVsMS0xMXoiLz4KPC9zdmc+" alt="CSS3"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">CSS 3</h3>
+          <p class="lang-type">Hoja de Estilos</p>
+        </div>
+        <span class="lang-year">1996</span>
+      </div>
+      <p class="card-body">Controla la apariencia visual de HTML. CSS3 añadió animaciones, transiciones, gradientes, Grid, Flexbox y variables personalizadas para diseños modernos y responsivos.</p>
+      <div class="card-tags">
+        <span class="tag">Estilos</span><span class="tag">Grid/Flex</span><span class="tag">Animaciones</span><span class="tag">Responsive</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>estilos.css</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre><span class="cm">/* Variables y hover */</span>
+<span class="cl">:root</span> {
+  <span class="pr">--azul</span>: <span class="nm">#2563eb</span>;
+}
+
+<span class="cl">.tarjeta</span> {
+  <span class="pr">background</span>: <span class="kw">var</span>(<span class="pr">--azul</span>);
+  <span class="pr">border-radius</span>: <span class="nm">12px</span>;
+  <span class="pr">transition</span>: <span class="nm">.3s</span> ease;
+}
+
+<span class="cl">.tarjeta:hover</span> {
+  <span class="pr">transform</span>: <span class="fn">translateY</span>(<span class="nm">-6px</span>);
+  <span class="pr">box-shadow</span>: <span class="nm">0 12px 30px</span>
+    <span class="fn">rgba</span>(<span class="nm">0,0,0,.2</span>);
+}</pre>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#f7df1e"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxMjgiIGZpbGw9IiNGN0RGMUUiIHJ4PSI0Ii8+CjxwYXRoIGZpbGw9IiMzMjMzMzAiIGQ9Ik0yNy41IDExM2w3LjctNC43YzEuNSAyLjYgMi44IDQuOCA2IDQuOCAzLjEgMCA1LTEuMiA1LTZWNzJoOS41djM1LjNjMCA5LjgtNS43IDE0LjItMTQuMSAxNC4yLTcuNSAwLTExLjktNC0xNC4xLTguNXpNNzMgMTEybDcuNy00LjdjMiAzLjMgNC43IDUuOCA5LjQgNS44IDMuOSAwIDYuNS0yIDYuNS00LjcgMC0zLjMtMi42LTQuNC03LTYuM2wtMi40LTFjLTYuOS0zLTExLjUtNi43LTExLjUtMTQuNiAwLTcuMyA1LjUtMTIuOCAxNC4xLTEyLjggNi4xIDAgMTAuNSAyLjEgMTMuNyA3LjdsLTcuNSA0LjhjLTEuNi0yLjktMy40LTQuMS02LjEtNC4xLTIuOCAwLTQuNiAxLjgtNC42IDQuMSAwIDIuOSAxLjggNCA2IDUuOGwyLjQgMWM4LjEgMy41IDEyLjggNyAxMi44IDE1LjEgMCA4LjYtNi44IDEzLjUtMTUuOSAxMy41QzgxLjUgMTIxLjYgNzUuOSAxMTcuOCA3MyAxMTJ6Ii8+Cjwvc3ZnPg==" alt="JavaScript"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">JavaScript</h3>
+          <p class="lang-type">Lenguaje de Script · Web</p>
+        </div>
+        <span class="lang-year">1995</span>
+      </div>
+      <p class="card-body">El único lenguaje nativo del navegador. Da vida a las páginas, maneja eventos, peticiones fetch y con Node.js funciona también en el backend. El más usado en el mundo.</p>
+      <div class="card-tags">
+        <span class="tag">DOM</span><span class="tag">APIs</span><span class="tag">Node.js</span><span class="tag">Async/Await</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>app.js</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre><span class="cm">// Función asíncrona</span>
+<span class="kw">async function</span> <span class="fn">getData</span>(url) {
+  <span class="kw">const</span> <span class="va">res</span> = <span class="kw">await</span> <span class="fn">fetch</span>(url);
+  <span class="kw">return</span> <span class="va">res</span>.<span class="fn">json</span>();
+}
+
+<span class="cm">// Arrow + destructuring</span>
+<span class="kw">const</span> <span class="fn">saludar</span> = (<span class="va">nombre</span>) <span class="op">=&gt;</span>
+  <span class="fn">console</span>.<span class="fn">log</span>(
+    <span class="st">`Hola, <span class="va">${nombre}</span>!`</span>
+  );
+
+<span class="fn">saludar</span>(<span class="st">"Cultura Digital"</span>);</pre>
+      </div>
+    </div>
+
+    <!-- PHP -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#777bb3"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGVsbGlwc2UgY3g9IjY0IiBjeT0iNjQiIHJ4PSI2MiIgcnk9IjMyIiBmaWxsPSIjNjE4MUI2Ii8+CjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0yOCA3NGwyLjUtMTNIMjZsLjUtM2gxMC41YzMgMCA1IDEuNSA0LjMgNS4zLS43IDMuOC0zLjUgNS4yLTYuNSA1LjJIMzJsLS44IDUuNXptNC04LjVoMS41YzEuNSAwIDIuOC0uNSAzLjItMyAuMy0xLjgtLjMtMi41LTEuOC0yLjVIMzR6TTQ1LjUgNzRsMy41LTE5LjVoMy41bC0xIDUuNWgzLjNjMyAwIDQuNSAxLjUgMy44IDUuMi0uNyAzLjgtMyA1LjItNS44IDUuMkg0OWwtLjUgMy41em00LjUtNmgxLjVjMS41IDAgMi41LS41IDIuOC0yLjUuMy0xLjUtLjMtMi0xLjUtMkg1MXpNNjIuNSA3NGwyLjUtMTNINjFsLjUtM2gxMC41YzMgMCA1IDEuNSA0LjMgNS4zLS43IDMuOC0zLjUgNS4yLTYuNSA1LjJINjdsLS44IDUuNXptNC04LjVoMS41YzEuNSAwIDIuOC0uNSAzLjItMyAuMy0xLjgtLjMtMi41LTEuOC0yLjVINjh6TTgyIDYxLjVsLTEuNSA4Yy0uNSAyLjguNSAzIDIgM2gxLjVsLS41IDNoLTIuM2MtMy4zIDAtNS0xLjMtNC02LjNsMS41LTcuN0g3NmwuNS0zaDIuNWwuOC00aDMuNWwtLjggNGgzbC0uNSAzeiIvPgo8L3N2Zz4=" alt="PHP"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">PHP</h3>
+          <p class="lang-type">Backend · Web Server</p>
+        </div>
+        <span class="lang-year">1994</span>
+      </div>
+      <p class="card-body">El lenguaje de servidor más extendido en la web. Impulsa WordPress y millones de sitios. Gestiona bases de datos, formularios, sesiones y genera HTML dinámicamente desde el servidor.</p>
+      <div class="card-tags">
+        <span class="tag">Backend</span><span class="tag">MySQL</span><span class="tag">WordPress</span><span class="tag">Servidor</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>index.php</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre><span class="cm">&lt;?php</span>
+<span class="cm">// Conexión a MySQL</span>
+<span class="va">$conn</span> = <span class="kw">new</span> <span class="cl">mysqli</span>(
+  <span class="st">"localhost"</span>, <span class="st">"root"</span>,
+  <span class="st">""</span>, <span class="st">"mi_base"</span>
+);
+
+<span class="va">$nombre</span> = <span class="va">$_POST</span>[<span class="st">"nombre"</span>];
+
+<span class="kw">if</span>(<span class="va">$nombre</span>) {
+  <span class="kw">echo</span> <span class="st">"Bienvenido: "</span>
+       . <span class="va">$nombre</span>;
+}
+<span class="cm">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <!-- TypeScript -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#3178c6"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxMjgiIGZpbGw9IiMzMTc4QzYiIHJ4PSI2Ii8+CjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0yMiA2NGgyMnY4SDM1djI4aC05VjcySDIyek02NyA2My41YzMuNS41IDYuNSAyIDguNSA0LjVsLTUuNSA1LjVjLTEuNS0yLTMuNS0zLTYtMy0yIDAtMy41LjgtMy41IDIuMyAwIDEuNSAxLjIgMi4yIDUuNSAzLjcgNiAyIDkuNSA0LjUgOS41IDEwLjUgMCA3LTUuNSAxMS0xMyAxMS01LjUgMC0xMC0yLTEzLTZsNS41LTUuNWMxLjggMi41IDQuNSA0IDcuNSA0IDMgMCA0LjUtMS4zIDQuNS0zIDAtMS44LTEtMi44LTYtNC41LTYuNS0yLjItOS01LTktMTAgMC02IDUtMTAgMTMtMTB6Ii8+Cjwvc3ZnPg==" alt="TypeScript"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">TypeScript</h3>
+          <p class="lang-type">Superset de JS · Tipado</p>
+        </div>
+        <span class="lang-year">2012</span>
+      </div>
+      <p class="card-body">Desarrollado por Microsoft, añade tipado estático a JavaScript. Detecta errores antes de ejecutar, mejora el autocompletado y hace proyectos grandes más seguros y mantenibles.</p>
+      <div class="card-tags">
+        <span class="tag">Tipos</span><span class="tag">Interfaces</span><span class="tag">Angular</span><span class="tag">React</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>usuario.ts</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre><span class="cm">// Interfaz tipada</span>
+<span class="kw">interface</span> <span class="cl">Usuario</span> {
+  id: <span class="kw">number</span>;
+  nombre: <span class="kw">string</span>;
+  activo: <span class="kw">boolean</span>;
+}
+
+<span class="kw">function</span> <span class="fn">mostrar</span>(
+  u: <span class="cl">Usuario</span>
+): <span class="kw">string</span> {
+  <span class="kw">return</span> <span class="st">`[<span class="va">${u.id}</span>] <span class="va">${u.nombre}</span>`</span>;
+}
+
+<span class="kw">const</span> <span class="va">jose</span>: <span class="cl">Usuario</span> = {
+  id: <span class="nm">1</span>, nombre: <span class="st">"Jose"</span>,
+  activo: <span class="kw">true</span>
+};</pre>
+      </div>
+    </div>
+
+    <!-- SQL -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#4479a1"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbD0iIzAwNjE4QSIgZD0iTTIgOTguNWMxMS41IDAgMjAuNS0xIDI3LjUtNCAyLS44IDUtMyA1LTUgMC0xLTEtMi0yLTIuNS0xLjUtLjUtNC0uNS03LjUgMGwtMSAuMlY4NWwxLS4yYzQtLjcgNy41LS41IDkuNS41IDMgMS41IDQuNSA0IDQuNSA3IDAgMy41LTIuNSA3LTYuNSA5QzI3IDEwNSAxOCAxMDYgMiAxMDZ6TTIgNzQuNVY2OGgxNWMzLjUgMCA1LjUtLjUgNi0uOC41LS4zIDEtMSAxLTIgMC0xLjMtMS0yLTEuNS0yLjItLjgtLjMtMi0uNS00LS41SDJWNTYuNWgxN2MzLjUgMCA2IC41IDggMS41IDMuNSAxLjcgNSA0LjUgNSA3LjUgMCA0LTIuNSA3LTcgOC41LTIgLjctNSAxLTggMXpNNjUgOTguNUg1NS41bC05LTI1LjUtMi41IDI1LjVIMzVsNC00MmgxMmw5LjUgMjYgMi41LTI2aDlsNCAyNS41IDkuNS0yNS41SDk4bDQgNDJIOTIuNWwtMi41LTI1LjV6TTExMSA5OC41bC00LTQyaDkuNWw0IDQyeiIvPgo8cGF0aCBmaWxsPSIjRTQ4RTAwIiBkPSJNMTExIDU2LjVoLTkuNWMtLjUgMC0xIC4zLTEgLjhsLTMgMTQuMmgxLjVsNi0xNCAzIDE0IDEuNS41eiIvPgo8L3N2Zz4=" alt="MySQL"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">SQL / MySQL</h3>
+          <p class="lang-type">Base de Datos Relacional</p>
+        </div>
+        <span class="lang-year">1974</span>
+      </div>
+      <p class="card-body">El estándar para gestionar bases de datos. Permite crear, consultar, actualizar y eliminar información. MySQL es su versión open source más popular, usada en la mayoría de aplicaciones web.</p>
+      <div class="card-tags">
+        <span class="tag">Consultas</span><span class="tag">Tablas</span><span class="tag">MySQL</span><span class="tag">Relaciones</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>consulta.sql</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre><span class="cm">-- Crear tabla</span>
+<span class="kw">CREATE TABLE</span> alumnos (
+  id     <span class="cl">INT</span> <span class="kw">AUTO_INCREMENT</span>,
+  nombre <span class="cl">VARCHAR</span>(<span class="nm">100</span>),
+  grado  <span class="cl">INT</span>,
+  <span class="kw">PRIMARY KEY</span>(id)
+);
+
+<span class="cm">-- Insertar y consultar</span>
+<span class="kw">INSERT INTO</span> alumnos
+  VALUES (<span class="kw">NULL</span>,<span class="st">'Jose'</span>,<span class="nm">3</span>);
+
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> alumnos
+<span class="kw">WHERE</span> grado = <span class="nm">3</span>;</pre>
+      </div>
+    </div>
+
+  </div><!-- /web grid -->
+
+  <div class="pull-quote">
+    <p>"La web fue diseñada como un espacio social — para ayudar a las personas a trabajar juntas."</p>
+    <cite>— Tim Berners-Lee, inventor de la WWW</cite>
+  </div>
+
+</section>
+</div>
+
+<div class="ch-divider"></div>
+
+<!-- ══════ CAPÍTULO II — ESCRITORIO ══════ -->
+<div class="page">
+<section id="desktop" class="chapter">
+
+  <div class="chapter-header">
+    <span class="chapter-number">II</span>
+    <div class="chapter-info">
+      <p class="chapter-label" style="color:var(--desk-c)">// Categoría 02</p>
+      <h2 class="chapter-title">Desarrollo de <em style="font-style:italic;color:var(--desk-c)">Escritorio</em></h2>
+    </div>
+    <div class="chapter-rule" style="background:var(--desk-c)"></div>
+  </div>
+
+  <div class="lang-grid">
+
+    <!-- Python -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#3776ab"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGxpbmVhckdyYWRpZW50IGlkPSJweWIiIHgxPSI3MC4yNTIiIHkxPSIxMjM3LjQ3NiIgeDI9IjE3MC42NTkiIHkyPSIxMTUxLjA4OSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGdyYWRpZW50VHJhbnNmb3JtPSJtYXRyaXgoLjU2MyAwIDAgLjU2OCAtMjkuMjE1IC03MDQuNjIyKSI+CjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzVBOUZENCIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzMDY5OTgiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJweXkiIHgxPSIyMDkuNDc0IiB5MT0iMTA5OC44MTEiIHgyPSIxNzMuNjIiIHkyPSIxMTQ5LjUzNyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGdyYWRpZW50VHJhbnNmb3JtPSJtYXRyaXgoLjU2MyAwIDAgLjU2OCAtMjkuMjE1IC03MDQuNjIyKSI+CjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0ZGRDQzQiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRkU4NzMiLz4KPC9saW5lYXJHcmFkaWVudD4KPHBhdGggZmlsbD0idXJsKCNweWIpIiBkPSJNNjMuNCA1Yy0xOC4yLjItMjEuOCA2LjMtMjEuOCAxNC4ydjEwLjRoMjEuOFYzM0gyOC45QzIwLjcgMzMgMTMuMyAzOCAxMSA1NS40Yy0yLjYgMTkuOC0yLjcgMzIuMSAwIDUyLjcgMiAxNS40IDYuNyAyNy4yIDE4LjEgMjcuMmgxMS43di0xM2MwLTkuNiA4LjMtMTggMTguMS0xOGgzMC4zYzggMCAxNC41LTYuNiAxNC41LTE0LjVWMjYuNEMxMDMuNyAxMS45IDk2LjIgNSA4MC45IDV6bS0xMC42IDguMmMzIDAgNS41IDIuNSA1LjUgNS41cy0yLjUgNS41LTUuNSA1LjUtNS41LTIuNS01LjUtNS41IDIuNS01LjUgNS41LTUuNXoiLz4KPHBhdGggZmlsbD0idXJsKCNweXkpIiBkPSJNNjUuNiAxMjNjMTguMi0uMiAyMS44LTYuMyAyMS44LTE0LjJWOTguNEg2NS42Vjk1aDM0LjVjOC4yIDAgMTUuNi01IDE3LjktMjIuNCAyLjYtMTkuOCAyLjctMzIuMSAwLTUyLjctMi0xNS40LTYuNy0yNy4yLTE4LjEtMjcuMkg4OC4ydjEzYzAgOS42LTguMyAxOC0xOC4xIDE4SDM5LjhjLTggMC0xNC41IDYuNi0xNC41IDE0LjV2MzcuN0MyNS4zIDkxLjQgMzIuOCAxMjMgNDcuMSAxMjN6bTEwLjYtOC4yYy0zIDAtNS41LTIuNS01LjUtNS41czIuNS01LjUgNS41LTUuNSA1LjUgMi41IDUuNSA1LjUtMi41IDUuNS01LjUgNS41eiIvPgo8L3N2Zz4=" alt="Python"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">Python</h3>
+          <p class="lang-type">Multipropósito · IA · Data</p>
+        </div>
+        <span class="lang-year">1991</span>
+      </div>
+      <p class="card-body">El lenguaje de más rápido crecimiento en el mundo. Su sintaxis clara lo hace ideal para aprender programación. Domina la Inteligencia Artificial, análisis de datos y automatización.</p>
+      <div class="card-tags">
+        <span class="tag">IA / ML</span><span class="tag">Data Science</span><span class="tag">Django</span><span class="tag">Automatización</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>programa.py</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre><span class="cm"># Clase con herencia</span>
+<span class="kw">class</span> <span class="cl">Alumno</span>:
+  <span class="kw">def</span> <span class="fn">__init__</span>(<span class="va">self</span>, nombre):
+    <span class="va">self</span>.nombre = nombre
+
+  <span class="kw">def</span> <span class="fn">presentar</span>(<span class="va">self</span>):
+    <span class="kw">return</span> <span class="st">f"Soy <span class="va">{self.nombre}</span>"</span>
+
+<span class="cm"># Comprensión de lista</span>
+<span class="va">aprobados</span> = [
+  n <span class="kw">for</span> n <span class="kw">in</span> [<span class="nm">8</span>,<span class="nm">9</span>,<span class="nm">6</span>,<span class="nm">10</span>]
+  <span class="kw">if</span> n <span class="op">&gt;=</span> <span class="nm">7</span>
+]  <span class="cm"># → [8, 9, 10]</span></pre>
+      </div>
+    </div>
+
+    <!-- Java -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#f89820"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbD0iIzAwNzRCRCIgZD0iTTQ3LjYgOTguN3MtNCAyLjMgMi44IDMuMWM4LjIgMSAxMi40LjggMjEuNC0uOSAwIDAgMi40IDEuNSA1LjcgMi44LTIwLjIgOC43LTQ1LjctLjUtMjkuOS01ek00NC43IDg0LjhzLTQuNSAzLjMgMi40IDRjOC44LjkgMTUuOCAxIDI3LjgtMS4zIDAgMCAxLjYgMS43IDQuMiAyLjYtMjQuNiA3LjItNTIgLjYtMzQuNC01LjN6Ii8+CjxwYXRoIGZpbGw9IiNFQTJEMkUiIGQ9Ik02OS40IDU1LjNjNSA1LjgtMS4zIDExLTEuMyAxMXMxMi43LTYuNiA2LjktMTQuOGMtNS41LTcuNy05LjctMTEuNSAxMy0yNC43IDAgMC0zNS41IDguOS0xOC42IDI4LjV6Ii8+CjxwYXRoIGZpbGw9IiMwMDc0QkQiIGQ9Ik05Ni43IDEwNy44czMgMi40LTMuMyA0LjNjLTExLjkgMy42LTQ5LjcgNC43LTYwLjIuMS0zLjgtMS42IDMuMy0zLjkgNS41LTQuMyAyLjMtLjUgMy42LS40IDMuNi0uNC00LjItMi45LTI2LjkgNS44LTExLjUgOC4zIDQxLjggNi44IDc2LjItMyA2NS45LTh6Ii8+CjxwYXRoIGZpbGw9IiMwMDc0QkQiIGQ9Ik00OS41IDcwLjhzLTE5LjIgNC42LTYuOCA2LjJjNS4yLjcgMTUuNi41IDI1LjMtLjIgNy45LS42IDE1LjktMS45IDE1LjktMS45cy0yLjggMS4yLTQuOCAyLjZjLTE5LjQgNS4xLTU2LjkgMi43LTQ2LjEtMi41IDkuMi00LjQgMTcuMi00LjIgMTYuNS00LjJ6TTg2IDkyLjRjMTkuNy0xMC4yIDEwLjYtMjAgNC4yLTE4LjctMS42LjMtMi4zLjYtMi4zLjZzLjYtMSAxLjctMS40YzEyLjctNC41IDIyLjQgMTMuMi00IDIwLjIgMCAwIC4zLS4zLjQtLjd6Ii8+CjxwYXRoIGZpbGw9IiNFQTJEMkUiIGQ9Ik03NS4zIDJzMTEgMTEtMTAuNCAyOGMtMTcuMiAxMy41LTMuOSAyMS4yIDAgMzAtMTAtOS0xNy4zLTE2LjktMTIuNC0yNC4zQzU5LjUgMjUgNzggMTkuOSA3NS4zIDJ6Ii8+CjxwYXRoIGZpbGw9IiMwMDc0QkQiIGQ9Ik01Mi4xIDEyNi4yYzE4LjkgMS4yIDQ4LTAuNyA0OC43LTkuNSAwIDAtMS4zIDMuNC0xNS42IDYtMTYuNCAzLTM2LjcgMi43LTQ4LjcuNyAwIDAgMi41IDIgMTUuNiAyLjh6Ii8+Cjwvc3ZnPg==" alt="Java"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">Java</h3>
+          <p class="lang-type">POO · Multiplataforma · JVM</p>
+        </div>
+        <span class="lang-year">1995</span>
+      </div>
+      <p class="card-body">"Write once, run anywhere." Java corre en la JVM y es el pilar de Android, sistemas bancarios y empresariales. Usa orientación a objetos pura con clases, herencia e interfaces.</p>
+      <div class="card-tags">
+        <span class="tag">POO</span><span class="tag">Android</span><span class="tag">Empresarial</span><span class="tag">JVM</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>Main.java</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre><span class="kw">public class</span> <span class="cl">Alumno</span> {
+  <span class="kw">private</span> <span class="cl">String</span> nombre;
+  <span class="kw">private int</span> edad;
+
+  <span class="kw">public</span> <span class="fn">Alumno</span>(
+    <span class="cl">String</span> n, <span class="kw">int</span> e
+  ) {
+    <span class="va">this</span>.nombre = n;
+    <span class="va">this</span>.edad = e;
+  }
+
+  <span class="kw">public</span> <span class="cl">String</span> <span class="fn">getNombre</span>() {
+    <span class="kw">return</span> nombre;
+  }
+}</pre>
+      </div>
+    </div>
+
+    <!-- C# -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#239120"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbD0iIzlCNEY5NiIgZD0iTTExNS40IDMwLjdMNjcuMSAyLjljLS44LS41LTEuOS0uNy0zLjEtLjctMS4yIDAtMi4zLjMtMy4xLjdsLTQ4IDI3LjljLTEuNyAxLTIuOSAzLjUtMi45IDUuNHY1NS43YzAgMS4xLjIgMi40IDEgMy41bDEwNi44LTYyYy0uNi0xLjItMS41LTIuMS0yLjQtMi43eiIvPgo8cGF0aCBmaWxsPSIjNjgyMTdBIiBkPSJNMTAuNyA5NS4zYy41LjggMS4yIDEuNSAxLjkgMS45bDQ4LjIgMjcuOWMuOC41IDEuOS43IDMuMS43IDEuMiAwIDIuMy0uMyAzLjEtLjdsNDgtMjcuOWMxLjctMSAyLjktMy41IDIuOS01LjRWMzYuMWMwLS45LS4xLTEuOS0uNi0yLjh6Ii8+CjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik03MS4zIDc5LjZjLTUuNCAzLjEtMTIuNyAyLjktMTguMy0uMy04LjEtNC43LTguOC0xNS41LTEuMy0yMS4xIDQuNy0zLjUgMTEuMS00IDE2LjQtMS43bDUtOC43Yy04LjQtNC4zLTE5LjMtMy42LTI3IDIuNS0xMi40IDkuNi0xMi42IDI3LjUtMS4xIDM3LjQgOC4yIDcuMSAxOS45IDguNiAyOS42IDQuNnpNOTcgNjZoLTUuNnYtNS42aC01LjVWNjZIODB2NS41aDUuOXY1LjZoNS41di01LjZIOTd6bTE4LjcgMGgtNS43di01LjZoLTUuNVY2NmgtNS44djUuNWg1Ljh2NS42aDUuNXYtNS42aDUuN3oiLz4KPC9zdmc+" alt="C#"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">C#</h3>
+          <p class="lang-type">Microsoft · .NET · Unity</p>
+        </div>
+        <span class="lang-year">2000</span>
+      </div>
+      <p class="card-body">El lenguaje estrella de Microsoft. Desarrolla apps Windows con WPF, juegos en Unity, APIs con ASP.NET Core y aplicaciones multiplataforma. Combina potencia con sintaxis limpia y moderna.</p>
+      <div class="card-tags">
+        <span class="tag">Windows</span><span class="tag">Unity 3D</span><span class="tag">.NET</span><span class="tag">ASP.NET</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>Programa.cs</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre><span class="cm">// Propiedades automáticas</span>
+<span class="kw">class</span> <span class="cl">Alumno</span> {
+  <span class="kw">public string</span> Nombre
+    { <span class="kw">get</span>; <span class="kw">set</span>; }
+  <span class="kw">public int</span> Nota
+    { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="cm">// LINQ — filtrar lista</span>
+<span class="kw">var</span> top = lista
+  .<span class="fn">Where</span>(a <span class="op">=&gt;</span> a.Nota <span class="op">&gt;</span> <span class="nm">8</span>)
+  .<span class="fn">OrderBy</span>(a <span class="op">=&gt;</span> a.Nombre)
+  .<span class="fn">ToList</span>();</pre>
+      </div>
+    </div>
+
+    <!-- C++ -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#00599c"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbD0iIzlDMDMzQSIgZD0iTTExNS40IDMwLjdMNjcuMSAyLjljLS44LS41LTEuOS0uNy0zLjEtLjctMS4yIDAtMi4zLjMtMy4xLjdsLTQ4IDI3LjljLTEuNyAxLTIuOSAzLjUtMi45IDUuNHY1NS43YzAgMS4xLjIgMi40IDEgMy41bDEwNi44LTYyYy0uNi0xLjItMS41LTIuMS0yLjQtMi43eiIvPgo8cGF0aCBmaWxsPSIjNkUwRDJGIiBkPSJNMTAuNyA5NS4zYy41LjggMS4yIDEuNSAxLjkgMS45bDQ4LjIgMjcuOWMuOC41IDEuOS43IDMuMS43IDEuMiAwIDIuMy0uMyAzLjEtLjdsNDgtMjcuOWMxLjctMSAyLjktMy41IDIuOS01LjRWMzYuMWMwLS45LS4xLTEuOS0uNi0yLjh6Ii8+CjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik03MCA3MS42Yy01LjMgMy0xMi41IDIuOC0xOC0uNC04LTQuNi04LjctMTUuMi0xLjMtMjAuOCA0LjctMy41IDExLTQgMTYuMy0xLjdsNS04LjVjLTguMy00LjItMTktMy41LTI2LjYgMi40LTEyLjIgOS41LTEyLjQgMjctMS4xIDM2LjggOC4xIDcgMTkuNiA4LjUgMjkuMSA0LjV6TTk3LjUgNjdIOTJ2LTUuNWgtNS41VjY3SDgxdjUuNWg1LjVWNzhIOTJ2LTUuNWg1LjV6bTE4LjUgMGgtNS41di01LjVIMTA1VjY3aC01LjV2NS41SDEwNVY3OGg1LjV2LTUuNWg1LjV6Ii8+Cjwvc3ZnPg==" alt="C++"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">C++</h3>
+          <p class="lang-type">Sistemas · Alto Rendimiento</p>
+        </div>
+        <span class="lang-year">1985</span>
+      </div>
+      <p class="card-body">El lenguaje de los motores de videojuegos (Unreal Engine), sistemas operativos y software crítico. Control directo sobre la memoria con punteros. Es uno de los lenguajes más rápidos en existencia.</p>
+      <div class="card-tags">
+        <span class="tag">Unreal Engine</span><span class="tag">Punteros</span><span class="tag">Sistemas OS</span><span class="tag">Alto Rendimiento</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>main.cpp</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre><span class="tg">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> <span class="cl">std</span>;
+
+<span class="kw">class</span> <span class="cl">Figura</span> {
+<span class="kw">public</span>:
+  <span class="kw">virtual double</span> <span class="fn">area</span>() = <span class="nm">0</span>;
+};
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+  <span class="kw">int</span>* <span class="va">ptr</span> = <span class="kw">new int</span>(<span class="nm">42</span>);
+  cout <span class="op">&lt;&lt;</span> <span class="st">"Valor: "</span>
+       <span class="op">&lt;&lt;</span> *<span class="va">ptr</span> <span class="op">&lt;&lt;</span> endl;
+  <span class="kw">delete</span> <span class="va">ptr</span>;
+}</pre>
+      </div>
+    </div>
+
+  </div><!-- /desktop grid -->
+</section>
+</div>
+
+<div class="ch-divider"></div>
+
+<!-- ══════ CAPÍTULO III — DISEÑO ══════ -->
+<div class="page">
+<section id="design" class="chapter">
+
+  <div class="chapter-header">
+    <span class="chapter-number">III</span>
+    <div class="chapter-info">
+      <p class="chapter-label" style="color:var(--design-c)">// Categoría 03</p>
+      <h2 class="chapter-title">Diseño <em style="font-style:italic;color:var(--design-c)">&amp; Maquetación</em></h2>
+    </div>
+    <div class="chapter-rule" style="background:var(--design-c)"></div>
+  </div>
+
+  <div class="lang-grid">
+
+    <!-- Sass/SCSS -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#cc6699"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbD0iI0NGNjQ5QSIgZD0iTTY0IDBDMjguNyAwIDAgMjguNyAwIDY0czI4LjcgNjQgNjQgNjQgNjQtMjguNyA2NC02NFM5OS4zIDAgNjQgMHoiLz4KPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTg0LjcgODMuM2MtMS43LjktMy41IDEuNC01LjEgMS40LTMuOCAwLTUuOC0yLjMtNS4xLTUuOC4zLTEuNS45LTMgMS43LTQuNiAxLjYtMy4xIDMuOS01LjggMy45LTguMSAwLTIuMS0xLjMtMy41LTQuMi0zLjUtMyAwLTcuMSAyLjMtMTAgNS4xLTEuNSAxLjQtMi43IDMtMy41IDQuOC0xIDIuMi0xLjYgNC43LTEuNiA3LjQgMCA0LjQgMi4zIDggNi44IDkuNCAxLjUuNSAzLjEuNyA0LjYuNSAxLjItLjEgMi40LS40IDMuNS0uOSAxLjUtLjcgMi45LTEuOCA0LTMuMS41LS43IDEtMS41IDEuNS0yLjJ6bS0yMC44LTMzYzIuMi41IDQuOCAxLjUgNi42IDMuNC45IDEgMS41IDIuMiAxLjUgMy43IDAgMi40LTEuMSA0LjYtMi4zIDYuMy0xLjMgMS43LTIuOSAzLjEtMy4zIDUuMS0uMS41LS4yIDEtLjIgMS41IDAgLjQuMS44LjMgMS4yLjQuOSAxLjQgMS40IDIuNiAxLjQgMS45IDAgMy41LTEuMiA0LjYtMi44LjYtMSAxLTIuMyAxLTMuNiAwLTIuNy0xLjMtNS0yLjgtNy0uNy0uOS0xLjQtMS45LTIuMS0yLjktLjgtMS4xLTEuNi0yLjMtMi4yLTMuNi0uOC0xLjktMS4xLTQtLjQtNi4xLjctMi4xIDIuMS00IDQtNS41IDEuOS0xLjYgNC4zLTIuNyA2LjgtMy4zLjctLjIgMS41LS4zIDIuMi0uMyA0LjIgMCA3LjcgMiA5LjcgNS42LjkgMS43IDEuNCAzLjYgMS40IDUuNiAwIDMuMS0xIDYtMi44IDguNC0uOSAxLjItMS45IDIuMi0zIDMtMS4yLjktMi41IDEuNS0zLjggMS44LTEgLjItMS45LjMtMi45LjEtMi40LS41LTQuMi0yLjQtNC4yLTQuOCAwLS41LjEtMSAuMy0xLjUuNi0xLjggMi4yLTMuMSA0LTMuNC44LS4xIDEuNiAwIDIuMy4zIDIuMS44IDMuMSAzLjEgMi40IDUuMi0uMi44LS43IDEuNS0xLjMgMi0uNS40LTEuMS43LTEuOC44LS41LjEtMSAwLTEuNS0uMiIvPgo8L3N2Zz4=" alt="Sass"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">Sass / SCSS</h3>
+          <p class="lang-type">Preprocesador CSS</p>
+        </div>
+        <span class="lang-year">2006</span>
+      </div>
+      <p class="card-body">El preprocesador CSS más popular. Permite variables, anidación, mixins, funciones y herencia para estilos más potentes. El código SCSS se compila a CSS estándar compatible con todos los navegadores.</p>
+      <div class="card-tags">
+        <span class="tag">Variables</span><span class="tag">Mixins</span><span class="tag">Nesting</span><span class="tag">Compilado</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>estilos.scss</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre><span class="va">$azul</span>: <span class="nm">#2563eb</span>;
+<span class="va">$radio</span>: <span class="nm">12px</span>;
+
+<span class="kw">@mixin</span> <span class="fn">sombra</span>(<span class="va">$color</span>) {
+  box-shadow: <span class="nm">0 4px 20px</span> <span class="va">$color</span>;
+}
+
+<span class="cl">.boton</span> {
+  background: <span class="va">$azul</span>;
+  border-radius: <span class="va">$radio</span>;
+  <span class="kw">@include</span> <span class="fn">sombra</span>(
+    rgba(<span class="va">$azul</span>, <span class="nm">.4</span>)
+  );
+  <span class="cl">&amp;:hover</span> {
+    background: <span class="fn">darken</span>(<span class="va">$azul</span>,<span class="nm">10%</span>);
+  }
+}</pre>
+      </div>
+    </div>
+
+    <!-- Tailwind -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#38bdf8"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbD0iIzM4QkRGOCIgZD0iTTY0IDE2Yy0xNyAwLTI3LjUgOC41LTMxLjUgMjUuNSA2LjMtOC41IDEzLjctMTEuNyAyMi05LjUgNC44IDEuMiA4LjIgNC43IDEyIDguM0M3Mi44IDQ2LjUgNzkuMyA1MyA5NiA1M2MxNyAwIDI3LjUtOC41IDMxLjUtMjUuNS02LjMgOC41LTEzLjcgMTEuNy0yMiA5LjUtNC44LTEuMi04LjItNC43LTEyLTguM0M4Ny4yIDIyLjUgODAuNyAxNiA2NCAxNnpNMzIuNSA1M0MxNS41IDUzIDUgNjEuNSAxIDc4LjUgNy4zIDcwIDE0LjcgNjYuOCAyMyA2OWM0LjggMS4yIDguMiA0LjcgMTIgOC4zQzQxLjMgODMuNSA0Ny44IDkwIDY0LjUgOTBjMTcgMCAyNy41LTguNSAzMS41LTI1LjUtNi4zIDguNS0xMy43IDExLjctMjIgOS41LTQuOC0xLjItOC4yLTQuNy0xMi04LjNDNTUuNyA1OS41IDQ5LjIgNTMgMzIuNSA1M3oiLz4KPC9zdmc+" alt="Tailwind CSS"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">Tailwind CSS</h3>
+          <p class="lang-type">Framework · Utility-first</p>
+        </div>
+        <span class="lang-year">2017</span>
+      </div>
+      <p class="card-body">Revolucionó el diseño web con clases de utilidad directamente en el HTML. Crea diseños complejos sin escribir CSS personalizado y genera solo el CSS que realmente se usa al compilar.</p>
+      <div class="card-tags">
+        <span class="tag">Utility-first</span><span class="tag">JIT</span><span class="tag">Responsive</span><span class="tag">Dark Mode</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>card.html</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre><span class="cm">&lt;!-- Card Tailwind --&gt;</span>
+<span class="tg">&lt;div</span> <span class="at">class=</span><span class="st">"
+  bg-blue-900 text-white
+  rounded-xl p-6 shadow-lg
+  hover:scale-105
+  transition duration-300
+"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;h2</span> <span class="at">class=</span><span class="st">"
+    text-xl font-bold
+    mb-2
+  "</span><span class="tg">&gt;</span>
+    Cultura Digital 2
+  <span class="tg">&lt;/h2&gt;</span>
+<span class="tg">&lt;/div&gt;</span></pre>
+      </div>
+    </div>
+
+    <!-- Figma / SVG -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#a259ff"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMzggNTciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGZpbGw9IiNGMjRFMUUiIGQ9Ik0xOSAyOC41QTkuNSA5LjUgMCAwMTE5IDkuNUg5LjVhOS41IDkuNSAwIDAwMCAxOXoiLz4KPHBhdGggZmlsbD0iI0ZGNzI2MiIgZD0iTTkuNSAyOC41QTkuNSA5LjUgMCAwMDkuNSA0N0gxOWE5LjUgOS41IDAgMDAwLTE5eiIvPgo8cGF0aCBmaWxsPSIjQTI1OUZGIiBkPSJNMjguNSAwSDE5YTkuNSA5LjUgMCAwMDAgMTloOS41YTkuNSA5LjUgMCAwMDAtMTl6Ii8+CjxwYXRoIGZpbGw9IiMxQUJDRkUiIGQ9Ik0zOCAyOC41YTkuNSA5LjUgMCAwMS05LjUgOS41IDkuNSA5LjUgMCAwMS05LjUtOS41IDkuNSA5LjUgMCAwMTkuNS05LjVBOS41IDkuNSAwIDAxMzggMjguNXoiLz4KPHBhdGggZmlsbD0iIzBBQ0Y4MyIgZD0iTTE5IDQ3YTkuNSA5LjUgMCAwMDkuNSA5LjVBOS41IDkuNSAwIDAwMzggNDdhOS41IDkuNSAwIDAwLTkuNS05LjVIMTl6Ii8+Cjwvc3ZnPg==" alt="Figma"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">Figma + SVG</h3>
+          <p class="lang-type">Diseño Vectorial · UI/UX</p>
+        </div>
+        <span class="lang-year">1999 / 2016</span>
+      </div>
+      <p class="card-body">SVG es el lenguaje XML para gráficos vectoriales en la web — escala a cualquier resolución. Figma es la herramienta de diseño UI/UX más popular del mundo y exporta directamente en formato SVG.</p>
+      <div class="card-tags">
+        <span class="tag">Vectores</span><span class="tag">UI/UX</span><span class="tag">Prototipado</span><span class="tag">Iconos</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>icono.svg</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre><span class="tg">&lt;svg</span>
+  <span class="at">viewBox=</span><span class="st">"0 0 100 100"</span>
+  <span class="at">xmlns=</span><span class="st">"http://www.w3.org/2000/svg"</span>
+<span class="tg">&gt;</span>
+  <span class="tg">&lt;circle</span>
+    <span class="at">cx=</span><span class="st">"50"</span> <span class="at">cy=</span><span class="st">"50"</span>
+    <span class="at">r=</span><span class="st">"40"</span>
+    <span class="at">fill=</span><span class="st">"#a259ff"</span>
+  <span class="tg">/&gt;</span>
+  <span class="tg">&lt;text</span>
+    <span class="at">x=</span><span class="st">"50"</span> <span class="at">y=</span><span class="st">"56"</span>
+    <span class="at">text-anchor=</span><span class="st">"middle"</span>
+    <span class="at">fill=</span><span class="st">"white"</span>
+  <span class="tg">&gt;</span>CD2<span class="tg">&lt;/text&gt;</span>
+<span class="tg">&lt;/svg&gt;</span></pre>
+      </div>
+    </div>
+
+    <!-- Markdown -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#083fa1"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjA4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjIwOCIgaGVpZ2h0PSIxMjgiIHJ4PSIxNSIgZmlsbD0iIzA4M0ZBMSIvPgo8cGF0aCBmaWxsPSIjZmZmIiBkPSJNMzAgOThWMzBoMjBsMjAgMjUgMjAtMjVoMjB2NjhIOTBWNTlMNzAgODQgNTAgNTl2Mzl6bTEyNSAwbC0zMC0zM2gyMFYzMGgyMHYzNWgyMHoiLz4KPC9zdmc+" alt="Markdown"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">Markdown</h3>
+          <p class="lang-type">Marcado Ligero · Documentación</p>
+        </div>
+        <span class="lang-year">2004</span>
+      </div>
+      <p class="card-body">Lenguaje de marcado ultraligero para crear documentos formateados con texto plano. Estándar en GitHub, wikis, blogs (Jekyll/Hugo) y herramientas como Notion, Obsidian y VS Code.</p>
+      <div class="card-tags">
+        <span class="tag">GitHub</span><span class="tag">Documentación</span><span class="tag">Notion</span><span class="tag">Blogs</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>README.md</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre><span class="tg"># </span><span class="fn">Cultura Digital 2</span>
+
+<span class="tg">## </span>Descripción
+
+Portafolio de **Inteligencia
+Artificial** del CBTis 144.
+
+<span class="tg">### </span>Contenidos
+
+<span class="op">-</span> Lenguajes de programación
+<span class="op">-</span> Diseño web
+<span class="op">-</span> Herramientas digitales
+
+<span class="tg">></span> <span class="st">Alumno: Jose William G.</span>
+
+[<span class="fn">Ver portafolio</span>](<span class="va">./index.html</span>)</pre>
+      </div>
+    </div>
+
+    <!-- Git -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#f05032"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbD0iI0YzNEYyOSIgZD0iTTEyNC43IDU4LjFMNjkuOSAzLjNDNjcuNyAxLjEgNjQuOCAwIDYxLjggMGMtMyAwLTUuOSAxLjEtOC4xIDMuM0w0MC4yIDE2LjhsMTYuNCAxNi40YzIuMy0uOCA0LjgtLjUgNi43IDFsLjIuMmMyLjIgMi4yIDIuNCA1LjUuOCA3LjlMNzkuNyA1Ny43YzIuNC0xLjcgNS43LTEuNCA3LjguNyAyLjQgMi40IDIuNCA2LjQgMCA4LjgtMi40IDIuNC02LjQgMi40LTguOCAwLTIuMi0yLjItMi40LTUuNi0uNy04LjFMNjQuNiA0NS43djM0YzEuNy44IDMuMiAyIDQuMyAzLjYgMi40IDIuNCAyLjQgNi40IDAgOC44LTIuNCAyLjQtNi40IDIuNC04LjggMC0yLjQtMi40LTIuNC02LjQgMC04LjguOC0uOCAxLjgtMS40IDIuOC0xLjhWNDUuMmMtMS0uNC0yLTEtMi44LTEuOC0yLjItMi4yLTIuNC01LjctLjctOC4yTDQzLjMgMTguOSAzLjMgNTguOUMxLjEgNjEgMCA2My45IDAgNjYuOWMwIDMgMS4xIDUuOSAzLjMgOC4xTDU4LjIgMTMwYzIuMiAyLjIgNS4xIDMuMyA4LjEgMy4zIDMgMCA1LjktMS4xIDguMS0zLjNsNTAuMy01MC4zYzIuMi0yLjIgMy4zLTUuMSAzLjMtOC4xIDAtMy0xLjEtNS44LTMuMy04LjF6IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIC0yKSIvPgo8L3N2Zz4=" alt="Git"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">Git / Bash</h3>
+          <p class="lang-type">Control de Versiones · Terminal</p>
+        </div>
+        <span class="lang-year">2005</span>
+      </div>
+      <p class="card-body">Creado por Linus Torvalds. El sistema de control de versiones más usado del mundo. Permite rastrear cambios, colaborar en equipo y revertir errores. GitHub lo usa para alojar millones de proyectos open source.</p>
+      <div class="card-tags">
+        <span class="tag">Versiones</span><span class="tag">GitHub</span><span class="tag">Colaboración</span><span class="tag">Open Source</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>terminal</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre><span class="cm"># Flujo básico de Git</span>
+<span class="fn">git</span> <span class="kw">init</span>
+
+<span class="fn">git</span> <span class="kw">add</span> .
+
+<span class="fn">git</span> <span class="kw">commit</span> -m <span class="st">"v1.0 inicial"</span>
+
+<span class="cm"># Subir a GitHub</span>
+<span class="fn">git</span> <span class="kw">remote add</span> origin \
+  https://github.com/josewg/cd2
+<span class="fn">git</span> <span class="kw">push</span> -u origin main</pre>
+      </div>
+    </div>
+
+    <!-- JSON -->
+    <div class="lang-card">
+      <div class="card-stripe" style="background:#cbab37"></div>
+      <div class="card-top">
+        <div class="logo-box">
+          <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxMjgiIHJ4PSIxNCIgZmlsbD0iIzFhMWExYSIvPgo8dGV4dCB4PSI1MCUiIHk9IjU0JSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSI0NCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNGNTlFMEIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPnsgfTwvdGV4dD4KPC9zdmc+" alt="JSON" style="width:52px;height:52px;object-fit:contain;padding:4px;"/>
+        </div>
+        <div class="card-names">
+          <h3 class="lang-name">JSON / XML</h3>
+          <p class="lang-type">Intercambio de Datos</p>
+        </div>
+        <span class="lang-year">2001</span>
+      </div>
+      <p class="card-body">JSON y XML son formatos estándar para estructurar e intercambiar datos entre sistemas. JSON domina en APIs REST modernas por su ligereza. XML sigue siendo esencial en configuraciones empresariales.</p>
+      <div class="card-tags">
+        <span class="tag">APIs REST</span><span class="tag">Configuración</span><span class="tag">Parseo</span><span class="tag">Estructurado</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar">
+          <span>datos.json</span>
+          <div class="code-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+        </div>
+        <pre>{
+  <span class="pr">"alumno"</span>: {
+    <span class="pr">"id"</span>: <span class="nm">1</span>,
+    <span class="pr">"nombre"</span>: <span class="st">"Jose William"</span>,
+    <span class="pr">"especialidad"</span>: <span class="st">"IA"</span>,
+    <span class="pr">"materias"</span>: [
+      <span class="st">"Cultura Digital"</span>,
+      <span class="st">"Programación"</span>
+    ],
+    <span class="pr">"activo"</span>: <span class="kw">true</span>
+  }
+}</pre>
+      </div>
+    </div>
+
+  </div><!-- /design grid -->
+</section>
+</div>
+
+<!-- ══════ FOOTER ══════ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-school">Centro de Bachillerato Tecnológico<br/>Industrial y de Servicios No. 144</p>
+      <div class="footer-data">
+        <p><strong>Especialidad:</strong> Inteligencia Artificial</p>
+        <p><strong>Alumno:</strong> Jose William Gomez Sanchez</p>
+        <p><strong>Docente:</strong> Jordy Chirino Balcazar</p>
+      </div>
+    </div>
+    <p class="footer-copy">Tarea 02 · Lenguajes de Diseño &amp; Programación<br/>Cultura Digital 2 · CBTis 144</p>
+  </div>
+</footer>
+
+</body>
+</html>
