@@ -5,14 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Ejercicio1 html</title>
 	<style>
-		<a href="index.html" class="btn-back" onclick="history.back(); return false;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <polyline points="15 18 9 12 15 6"/>
-      </svg>
-      Volver al Portafolio
-    </a>
-		
-		/*inicia codigo css*/
+	/*inicia codigo css*/
 		body
 		{
 		 background: #0C0C57;
@@ -35,12 +28,28 @@
    			height:200px;
    		}
 
+		/* Estilo para el nuevo botón */
+		.btn-volver 
+		{
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			background: white;
+			color: black;
+			padding: 8px 12px;
+			text-decoration: none;
+			border-radius: 4px;
+			font-family: sans-serif;
+			font-size: 14px;
+		}
+
         /*termina codigo css*/
     </style>
 </head>
-  </div>
-</header>
 <body>
+
+<a href="index.html" class="btn-volver">volver al portafolio</a>
+
 <h1>figuras geometricas con html y css</h1>
 
 <div class="cuadrado"> 
