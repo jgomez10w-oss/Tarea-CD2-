@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Conceptos Generales de Python — Investigación</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&family=Source+Code+Pro:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    /* ══════════════════════════════════════════════
+       VARIABLES & RESET
+    ══════════════════════════════════════════════ */
+    :root {
+      --negro:       #050a05;
+      --verde:       #00ff41;
+      --verde-dim:   #00c832;
+      --verde-dark:  #003d10;
+      --verde-glow:  rgba(0,255,65,0.15);
+      --verde-borde: rgba(0,255,65,0.3);
+      --amarillo:    #ffe400;
+      --azul:        #00cfff;
+      --rojo:        #ff2d55;
+      --gris:        #0d1a0d;
+      --gris-med:    #1a2e1a;
+      --texto:       #b8ffb8;
+      --texto-dim:   #6abf6a;
+      --borde:       1px solid rgba(0,255,65,0.2);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 15px; }
+
+    body {
+      background: var(--negro);
+      color: var(--texto);
+      font-family: 'Source Code Pro', monospace;
+      font-weight: 300;
+      line-height: 1.75;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ── Fondo con ruido / scanlines ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0,255,65,0.015) 2px,
+          rgba(0,255,65,0.015) 4px
+        );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(0,255,65,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ══════════════════════════════════════════════
+       ANIMACIONES
+    ══════════════════════════════════════════════ */
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    @keyframes scanline {
+      0%   { transform: translateY(-100vh); }
+      100% { transform: translateY(100vh); }
+    }
+    @keyframes glow-pulse {
+      0%,100% { text-shadow: 0 0 8px var(--verde), 0 0 20px rgba(0,255,65,0.4); }
+      50%     { text-shadow: 0 0 16px var(--verde), 0 0 40px rgba(0,255,65,0.7), 0 0 80px rgba(0,255,65,0.3); }
+    }
+    @keyframes flicker {
+      0%,19%,21%,23%,25%,54%,56%,100% { opacity: 1; }
+      20%,24%,55% { opacity: 0.6; }
+    }
+    @keyframes typing {
+      from { width: 0; }
+      to   { width: 100%; }
+    }
+    @keyframes slide-in {
+      from { opacity: 0; transform: translateX(-20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Línea de escaneo móvil */
+    .scanline-fx {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(0,255,65,0.4), transparent);
+      animation: scanline 8s linear infinite;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ══════════════════════════════════════════════
+       BARRA SUPERIOR
+    ══════════════════════════════════════════════ */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 48px;
+      background: rgba(5,10,5,0.95);
+      border-bottom: 1px solid var(--verde-borde);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      z-index: 200;
+      backdrop-filter: blur(4px);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--texto-dim);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      padding: 0.25rem 0;
+    }
+    .btn-back:hover { color: var(--verde); }
+    .btn-back:hover svg { stroke: var(--verde); }
+    .btn-back svg { width: 13px; stroke: var(--texto-dim); transition: stroke 0.2s; }
+
+    .topbar-id {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--verde-dim);
+      letter-spacing: 0.08em;
+    }
+    .topbar-id span { color: var(--verde); }
+
+    .topbar-status {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--texto-dim);
+    }
+    .status-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--verde);
+      animation: blink 2s ease-in-out infinite;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    /* ══════════════════════════════════════════════
+       LAYOUT
+    ══════════════════════════════════════════════ */
+    .layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 100vh;
+      padding-top: 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      border-right: 1px solid var(--verde-borde);
+      padding: 2rem 0;
+      position: sticky;
+      top: 48px;
+      height: calc(100vh - 48px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--verde-dark) transparent;
+      background: rgba(5,10,5,0.6);
+    }
+
+    .sidebar-head {
+      padding: 0 1.25rem 1.25rem;
+      border-bottom: var(--borde);
+      margin-bottom: 1rem;
+    }
+    .sidebar-head .label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--verde-dim);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+    .sidebar-head .title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--verde);
+      text-shadow: 0 0 8px rgba(0,255,65,0.5);
+    }
+
+    .nav-group { margin-bottom: 0.5rem; }
+    .nav-group-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.5rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--verde-dark);
+      padding: 0.75rem 1.25rem 0.3rem;
+      display: block;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 1.25rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--texto-dim);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      border-left: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .nav-link:hover {
+      color: var(--verde);
+      border-left-color: var(--verde);
+      background: var(--verde-glow);
+      text-shadow: 0 0 6px rgba(0,255,65,0.5);
+    }
+    .nav-link .idx {
+      font-size: 0.55rem;
+      color: var(--verde-dim);
+      min-width: 22px;
+    }
+
+    /* ══════════════════════════════════════════════
+       PORTADA / HERO
+    ══════════════════════════════════════════════ */
+    .portada {
+      padding: 5rem 5rem 4rem;
+      border-bottom: 1px solid var(--verde-borde);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .portada::before {
+      content: 'PYTHON';
+      position: absolute;
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: clamp(100px, 18vw, 280px);
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(0,255,65,0.06);
+      right: -2%;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.05em;
+    }
+
+    .portada-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      animation: slide-in 0.6s ease both;
+    }
+    .portada-meta .tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--negro);
+      background: var(--verde);
+      padding: 0.2rem 0.6rem;
+    }
+    .portada-meta .sep { color: var(--verde-dim); font-size: 0.7rem; }
+    .portada-meta .fecha {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--texto-dim);
+      letter-spacing: 0.1em;
+    }
+
+    .portada h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--verde);
+      animation: glow-pulse 3s ease-in-out infinite, fade-up 0.7s ease 0.1s both;
+      margin-bottom: 1.25rem;
+    }
+
+    .portada-subtitulo {
+      font-family: 'Source Code Pro', monospace;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1rem;
+      color: var(--texto-dim);
+      max-width: 560px;
+      margin-bottom: 2.5rem;
+      animation: fade-up 0.7s ease 0.2s both;
+      border-left: 2px solid var(--verde-borde);
+      padding-left: 1rem;
+    }
+
+    .portada-stats {
+      display: flex;
+      gap: 2.5rem;
+      animation: fade-up 0.7s ease 0.3s both;
+    }
+    .stat-item { }
+    .stat-num {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--verde);
+      text-shadow: 0 0 12px rgba(0,255,65,0.5);
+    }
+    .stat-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--texto-dim);
+    }
+
+    /* ══════════════════════════════════════════════
+       CONTENIDO PRINCIPAL
+    ══════════════════════════════════════════════ */
+    .main {
+      padding: 4rem 5rem 7rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── SECCIONES ── */
+    .seccion {
+      margin-bottom: 5.5rem;
+      scroll-margin-top: 68px;
+      animation: fade-up 0.5s ease both;
+    }
+
+    .seccion-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--verde-borde);
+      position: relative;
+    }
+    .seccion-header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 60px;
+      height: 1px;
+      background: var(--verde);
+      box-shadow: 0 0 8px var(--verde);
+    }
+
+    .sec-num {
+      font-family: 'VT323', monospace;
+      font-size: 2rem;
+      color: var(--verde-dim);
+      line-height: 1;
+      min-width: 40px;
+    }
+
+    .sec-titulo {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--verde);
+      letter-spacing: 0.05em;
+    }
+
+    .sec-titulo small {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--texto-dim);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      display: block;
+      font-weight: 400;
+      margin-top: 2px;
+    }
+
+    /* ── PÁRRAFOS ── */
+    p {
+      margin-bottom: 1.1rem;
+      font-size: 0.9rem;
+      color: var(--texto);
+    }
+    .lead {
+      font-size: 1rem;
+      color: var(--texto);
+      border-left: 2px solid var(--verde);
+      padding-left: 1.25rem;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+
+    h3 {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--azul);
+      margin: 2.25rem 0 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    h3::before {
+      content: '▶';
+      color: var(--verde);
+      font-size: 0.6rem;
+    }
+
+    /* ── BLOQUES DE CÓDIGO ── */
+    .code-wrap {
+      margin: 1.5rem 0 2rem;
+      border: 1px solid var(--verde-borde);
+      position: relative;
+      background: var(--gris);
+    }
+    .code-wrap:hover {
+      border-color: rgba(0,255,65,0.5);
+      box-shadow: 0 0 16px rgba(0,255,65,0.1);
+    }
+
+    .code-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.4rem 1rem;
+      border-bottom: 1px solid var(--verde-borde);
+      background: rgba(0,255,65,0.04);
+    }
+    .code-lang {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--verde);
+    }
+    .code-desc {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.55rem;
+      color: var(--texto-dim);
+      letter-spacing: 0.08em;
+    }
+
+    pre {
+      padding: 1.5rem 1.75rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.9;
+      overflow-x: auto;
+      color: var(--texto);
+      scrollbar-width: thin;
+      scrollbar-color: var(--verde-dark) transparent;
+    }
+
+    /* Colores de sintaxis Python */
+    .kw  { color: #ff7aad; }   /* keyword */
+    .fn  { color: #79d4ff; }   /* función */
+    .st  { color: #ffe066; }   /* string */
+    .nm  { color: #ffb347; }   /* número */
+    .cm  { color: #4a7a4a; font-style: italic; } /* comentario */
+    .cl  { color: #c8ff80; }   /* clase */
+    .bi  { color: #ff9f7e; }   /* builtin */
+    .op  { color: var(--verde-dim); } /* operador */
+    .de  { color: #d4a0ff; }   /* decorator */
+
+    /* Inline code */
+    code {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.82em;
+      background: rgba(0,255,65,0.07);
+      color: var(--verde);
+      padding: 0.1em 0.4em;
+      border: 1px solid rgba(0,255,65,0.15);
+    }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      border: 1px solid rgba(0,255,65,0.2);
+      background: rgba(0,255,65,0.03);
+      padding: 1.1rem 1.4rem;
+      margin: 1.5rem 0;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+    .callout-ico {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      white-space: nowrap;
+      border: 1px solid;
+    }
+    .callout-ico.verde  { color: var(--verde);   border-color: var(--verde); }
+    .callout-ico.azul   { color: var(--azul);    border-color: var(--azul); }
+    .callout-ico.amarillo { color: var(--amarillo); border-color: var(--amarillo); }
+    .callout-ico.rojo   { color: var(--rojo);    border-color: var(--rojo); }
+    .callout p { margin: 0; font-size: 0.86rem; color: var(--texto-dim); }
+    .callout strong { color: var(--texto); }
+
+    /* ── TABLA ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0 2rem;
+      font-size: 0.82rem;
+    }
+    th {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--negro);
+      background: var(--verde);
+      padding: 0.55rem 0.9rem;
+      text-align: left;
+      font-weight: 400;
+    }
+    td {
+      padding: 0.6rem 0.9rem;
+      border-bottom: 1px solid rgba(0,255,65,0.1);
+      color: var(--texto-dim);
+      vertical-align: top;
+    }
+    td:first-child {
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--azul);
+      font-size: 0.78rem;
+    }
+    tr:hover td { background: var(--verde-glow); }
+
+    /* ── LISTAS ── */
+    ul, ol { padding-left: 1.5rem; margin-bottom: 1.25rem; }
+    li {
+      margin-bottom: 0.45rem;
+      font-size: 0.88rem;
+      color: var(--texto);
+    }
+    ul li::marker { color: var(--verde); content: '▸ '; }
+    ol li::marker {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--verde);
+    }
+
+    /* ── GRID DE TARJETAS ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--verde-borde);
+      border: 1px solid var(--verde-borde);
+      margin: 1.5rem 0 2rem;
+    }
+    .card {
+      background: var(--negro);
+      padding: 1.25rem;
+      transition: background 0.2s;
+    }
+    .card:hover { background: var(--verde-glow); }
+    .card-titulo {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--verde);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 6px rgba(0,255,65,0.4);
+    }
+    .card p { font-size: 0.78rem; color: var(--texto-dim); margin: 0; }
+
+    /* ── TIMELINE / HISTORIA ── */
+    .timeline { margin: 1.5rem 0 2.5rem; }
+    .tl-item {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 1.25rem;
+      margin-bottom: 0;
+      position: relative;
+    }
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: 38px;
+      top: 28px;
+      bottom: -1px;
+      width: 1px;
+      background: var(--verde-borde);
+    }
+    .tl-item:last-child::before { display: none; }
+    .tl-año {
+      font-family: 'VT323', monospace;
+      font-size: 1.4rem;
+      color: var(--verde);
+      text-align: center;
+      padding-top: 2px;
+      text-shadow: 0 0 8px rgba(0,255,65,0.4);
+    }
+    .tl-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--verde);
+      box-shadow: 0 0 8px var(--verde);
+      position: absolute;
+      left: 34px; top: 10px;
+    }
+    .tl-body {
+      padding: 0 0 2rem 0.5rem;
+      border-left: 1px solid transparent;
+    }
+    .tl-body h4 {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--azul);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.3rem;
+    }
+    .tl-body p { font-size: 0.8rem; color: var(--texto-dim); margin: 0; }
+
+    /* ── SEPARADOR ── */
+    .sep-line {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0;
+      opacity: 0.4;
+    }
+    .sep-line::before, .sep-line::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--verde);
+    }
+    .sep-line span {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--verde);
+    }
+
+    /* ── PROMPT / TERMINAL DEMO ── */
+    .terminal-demo {
+      background: #000;
+      border: 1px solid var(--verde-borde);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0 2rem;
+      font-family: 'VT323', monospace;
+      font-size: 1.1rem;
+      color: var(--verde);
+      line-height: 1.6;
+      box-shadow: inset 0 0 30px rgba(0,255,65,0.05);
+    }
+    .terminal-demo .prompt { color: var(--verde-dim); }
+    .terminal-demo .out    { color: var(--amarillo); }
+    .terminal-demo .err    { color: var(--rojo); }
+    .terminal-demo .cursor {
+      display: inline-block;
+      width: 8px; height: 1em;
+      background: var(--verde);
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+      margin-left: 2px;
+    }
+
+    /* ── BADGE ── */
+    .badge {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.15rem 0.5rem;
+      border: 1px solid;
+      vertical-align: middle;
+      margin-left: 0.5rem;
+    }
+    .badge.verde   { color: var(--verde);   border-color: var(--verde); }
+    .badge.amarillo{ color: var(--amarillo); border-color: var(--amarillo); }
+    .badge.azul    { color: var(--azul);    border-color: var(--azul); }
+
+    /* ── RESUMEN FINAL ── */
+    .resumen-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--verde-borde);
+      border: 1px solid var(--verde-borde);
+      margin: 2rem 0;
+    }
+    .resumen-item {
+      background: var(--negro);
+      padding: 1.5rem;
+    }
+    .resumen-item h4 {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.7rem;
+      color: var(--verde);
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.08em;
+    }
+    .resumen-item ul { padding-left: 1rem; }
+    .resumen-item li { font-size: 0.8rem; }
+
+    /* ── CITA ACADÉMICA ── */
+    blockquote {
+      border-left: 3px solid var(--verde);
+      margin: 1.5rem 0;
+      padding: 1rem 1.5rem;
+      background: rgba(0,255,65,0.03);
+      font-style: italic;
+      color: var(--texto-dim);
+      font-size: 0.88rem;
+    }
+    blockquote cite {
+      display: block;
+      margin-top: 0.5rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: var(--verde-dim);
+      font-style: normal;
+    }
+
+    /* ══════════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; border-right: none; border-bottom: var(--borde); }
+      .main { padding: 2rem 1.5rem 4rem; }
+      .portada { padding: 3rem 1.5rem 2rem; }
+      .portada-stats { flex-wrap: wrap; gap: 1.5rem; }
+      .resumen-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="scanline-fx"></div>
+
+<!-- ████ TOPBAR ████ -->
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="btn-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+        <path d="M19 12H5M12 5l-7 7 7-7"/>
+      </svg>
+      Portafolio
+    </a>
+    <span class="topbar-id">DOC/<span>PY-001</span></span>
+  </div>
+  <div class="topbar-status">
+    <span><span class="status-dot"></span>SISTEMA ACTIVO</span>
+    <span>PYTHON_RESEARCH_v1.0</span>
+  </div>
+</header>
+
+<!-- ████ LAYOUT ████ -->
+<div class="layout">
+
+  <!-- ██ SIDEBAR ██ -->
+  <nav class="sidebar">
+    <div class="sidebar-head">
+      <span class="label">Índice</span>
+      <span class="title">PYTHON DOC</span>
+    </div>
+
+    <div class="nav-group">
+      <span class="nav-group-label">Fundamentos</span>
+      <a href="#sec-1" class="nav-link"><span class="idx">01</span> ¿Qué es Python?</a>
+      <a href="#sec-2" class="nav-link"><span class="idx">02</span> Historia y versiones</a>
+      <a href="#sec-3" class="nav-link"><span class="idx">03</span> Características</a>
+      <a href="#sec-4" class="nav-link"><span class="idx">04</span> Tipos de datos</a>
+      <a href="#sec-5" class="nav-link"><span class="idx">05</span> Variables y operadores</a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">Estructuras</span>
+      <a href="#sec-6" class="nav-link"><span class="idx">06</span> Control de flujo</a>
+      <a href="#sec-7" class="nav-link"><span class="idx">07</span> Funciones</a>
+      <a href="#sec-8" class="nav-link"><span class="idx">08</span> Colecciones</a>
+      <a href="#sec-9" class="nav-link"><span class="idx">09</span> POO en Python</a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">Avanzado</span>
+      <a href="#sec-10" class="nav-link"><span class="idx">10</span> Módulos y librerías</a>
+      <a href="#sec-11" class="nav-link"><span class="idx">11</span> Manejo de errores</a>
+      <a href="#sec-12" class="nav-link"><span class="idx">12</span> Aplicaciones reales</a>
+      <a href="#sec-13" class="nav-link"><span class="idx">13</span> Conclusiones</a>
+    </div>
+  </nav>
+
+  <!-- ██ CONTENIDO ██ -->
+  <div style="position:relative; z-index:1;">
+
+    <!-- PORTADA -->
+    <section class="portada">
+      <div class="portada-meta">
+        <span class="tag">Investigación</span>
+        <span class="sep">//</span>
+        <span class="fecha">PROG_101 · 2025</span>
+      </div>
+      <h1>Conceptos Generales<br/>de Python</h1>
+      <p class="portada-subtitulo">
+        Un análisis completo del lenguaje de programación más popular del mundo:
+        su historia, filosofía, estructuras fundamentales y aplicaciones en la industria.
+      </p>
+      <div class="portada-stats">
+        <div class="stat-item">
+          <div class="stat-num">13</div>
+          <div class="stat-label">Secciones</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">30+</div>
+          <div class="stat-label">Ejemplos código</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">#1</div>
+          <div class="stat-label">Lenguaje más usado</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">34</div>
+          <div class="stat-label">Años de historia</div>
+        </div>
+      </div>
+    </section>
+
+    <main class="main">
+
+      <!-- ══ SECCIÓN 1 ══ -->
+      <section id="sec-1" class="seccion">
+        <div class="seccion-header">
+          <span class="sec-num">01</span>
+          <div class="sec-titulo">¿Qué es Python?<small>Definición y filosofía</small></div>
+        </div>
+
+        <p class="lead">Python es un lenguaje de programación de alto nivel, interpretado, de propósito general y con tipado dinámico, diseñado con énfasis en la legibilidad del código y la productividad del programador.</p>
+
+        <p>Fue creado por <strong>Guido van Rossum</strong> y su primera versión fue publicada en 1991. El nombre no proviene de la serpiente, sino del grupo de comedia británico <em>Monty Python's Flying Circus</em>, que Van Rossum seguía durante el desarrollo.</p>
+
+        <p>La filosofía central de Python está resumida en el documento <strong>PEP 20</strong>, conocido como <em>"El Zen de Python"</em>, que establece 19 principios de diseño.</p>
+
+        <div class="terminal-demo">
+          <div><span class="prompt">>>> </span><span class="kw">import</span> this</div>
+          <div><span class="out">The Zen of Python, by Tim Peters</span></div>
+          <div><span class="out">Beautiful is better than ugly.</span></div>
+          <div><span class="out">Explicit is better than implicit.</span></div>
+          <div><span class="out">Simple is better than complex.</span></div>
+          <div><span class="out">Readability counts.</span></div>
+          <div><span class="prompt">>>> </span><span class="cursor"></span></div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-titulo">Alto nivel</div>
+            <p>Se abstrae de los detalles del hardware. El programador se enfoca en la lógica, no en la memoria.</p>
+          </div>
+          <div class="card">
+            <div class="card-titulo">Interpretado</div>
+            <p>El código se ejecuta línea a línea por el intérprete. No requiere compilación previa.</p>
+          </div>
+          <div class="card">
+            <div class="card-titulo">Multiparadigma</div>
+            <p>Soporta programación imperativa, funcional y orientada a objetos de forma simultánea.</p>
+          </div>
+          <div class="card">
+            <div class="card-titulo">Open Source</div>
+            <p>Licencia libre. Comunidad global de millones de desarrolladores y paquetes.</p>
+          </div>
+        </div>
+
+        <blockquote>
+          "Python es un experimento en cómo construir un lenguaje que sea lo suficientemente potente para resolver problemas reales, pero lo suficientemente simple para aprenderse en una tarde."
+          <cite>— Guido van Rossum, creador de Python</cite>
+        </blockquote>
+      </section>
+
+      <div class="sep-line"><span>§</span></div>
+
+      <!-- ══ SECCIÓN 2 ══ -->
+      <section id="sec-2" class="seccion">
+        <div class="seccion-header">
+          <span class="sec-num">02</span>
+          <div class="sec-titulo">Historia y versiones<small>Evolución del lenguaje</small></div>
+        </div>
+
+        <p class="lead">Python tiene más de tres décadas de historia continua, con una evolución constante que lo ha llevado de un proyecto personal a ser el lenguaje más popular del mundo.</p>
+
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-año">1989</div>
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <h4>Inicio del proyecto</h4>
+              <p>Guido van Rossum comienza a escribir Python en diciembre de 1989 en el Centrum Wiskunde & Informatica (CWI), Países Bajos, como sucesor del lenguaje ABC.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-año">1991</div>
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <h4>Python 0.9.0</h4>
+              <p>Primera versión pública. Ya incluía clases con herencia, manejo de excepciones, funciones y módulos.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-año">2000</div>
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <h4>Python 2.0</h4>
+              <p>Introducción de list comprehensions, recolector de basura y soporte Unicode. Usada durante 20 años.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-año">2008</div>
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <h4>Python 3.0</h4>
+              <p>Rediseño que rompió compatibilidad con Python 2. Corrigió inconsistencias fundamentales del lenguaje.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-año">2020</div>
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <h4>Fin de Python 2</h4>
+              <p>Fin oficial del soporte a Python 2.7. Toda la industria migró definitivamente a Python 3.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-año">2025</div>
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <h4>Python 3.13+</h4>
+              <p>Versión actual con mejoras en rendimiento, JIT experimental y el primer GIL-free build para múltiples hilos.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="sep-line"><span>§</span></div>
+
+      <!-- ══ SECCIÓN 3 ══ -->
+      <section id="sec-3" class="seccion">
+        <div class="seccion-header">
+          <span class="sec-num">03</span>
+          <div class="sec-titulo">Características principales<small>Por qué Python es especial</small></div>
+        </div>
+
+        <p class="lead">Python combina simplicidad sintáctica con potencia real. Sus características no son accidentales, sino producto de decisiones de diseño deliberadas y coherentes.</p>
+
+        <table>
+          <thead>
+            <tr><th>Característica</th><th>Descripción</th><th>Beneficio práctico</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Sintaxis limpia</td>
+              <td>Usa indentación como estructura en lugar de llaves <code>{}</code>.</td>
+              <td>Código legible por humanos. Menos errores de formato.</td>
+            </tr>
+            <tr>
+              <td>Tipado dinámico</td>
+              <td>No se declara el tipo de una variable. Se infiere en ejecución.</td>
+              <td>Desarrollo más rápido. Código más corto.</td>
+            </tr>
+            <tr>
+              <td>Tipado fuerte</td>
+              <td>No mezcla tipos implícitamente. <code>"3" + 3</code> genera error.</td>
+              <td>Menos bugs silenciosos. Comportamiento predecible.</td>
+            </tr>
+            <tr>
+              <td>Garbage collection</td>
+              <td>Gestión automática de memoria mediante conteo de referencias.</td>
+              <td>El programador no administra memoria manualmente.</td>
+            </tr>
+            <tr>
+              <td>Baterías incluidas</td>
+              <td>Biblioteca estándar amplia que cubre casi cualquier tarea.</td>
+              <td>Menos dependencias externas para proyectos comunes.</td>
+            </tr>
+            <tr>
+              <td>Multiplataforma</td>
+              <td>El mismo código corre en Windows, macOS y Linux.</td>
+              <td>Portabilidad total del código.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout">
+          <span class="callout-ico azul">nota</span>
+          <p>La <strong>indentación obligatoria</strong> en Python no es solo estética: es parte de la gramática del lenguaje. Un bloque de código mal indentado es un error de sintaxis, lo que fuerza a todos los programadores a escribir código visualmente consistente.</p>
+        </div>
+      </section>
+
+      <div class="sep-line"><span>§</span></div>
+
+      <!-- ══ SECCIÓN 4 ══ -->
+      <section id="sec-4" class="seccion">
+        <div class="seccion-header">
+          <span class="sec-num">04</span>
+          <div class="sec-titulo">Tipos de datos<small>Clasificación y uso</small></div>
+        </div>
+
+        <p class="lead">En Python, todo es un objeto. Cada valor tiene un tipo asociado que determina qué operaciones se pueden realizar sobre él.</p>
+
+        <h3>Tipos numéricos</h3>
+        <div class="code-wrap">
+          <div class="code-top">
+            <span class="code-lang">Python</span>
+            <span class="code-desc">tipos numéricos</span>
+          </div>
+          <pre><span class="cm"># Enteros: precisión ilimitada en Python 3</span>
+edad      <span class="op">=</span> <span class="nm">25</span>
+poblacion <span class="op">=</span> <span class="nm">8_100_000_000</span>   <span class="cm"># guión bajo como separador de miles</span>
+binario   <span class="op">=</span> <span class="nm">0b1010</span>           <span class="cm"># = 10 en decimal</span>
+hexa      <span class="op">=</span> <span class="nm">0xFF</span>             <span class="cm"># = 255 en decimal</span>
+
+<span class="cm"># Flotantes: punto decimal o notación científica</span>
+pi        <span class="op">=</span> <span class="nm">3.14159</span>
+gravedad  <span class="op">=</span> <span class="nm">9.8e-2</span>           <span class="cm"># = 0.098</span>
+
+<span class="cm"># Complejos</span>
+z         <span class="op">=</span> <span class="nm">3</span> <span class="op">+</span> <span class="nm">4j</span>
+
+<span class="cm"># Verificar tipo</span>
+<span class="bi">print</span>(<span class="bi">type</span>(edad))     <span class="cm"># &lt;class 'int'&gt;</span>
+<span class="bi">print</span>(<span class="bi">type</span>(pi))      <span class="cm"># &lt;class 'float'&gt;</span></pre>
+        </div>
+
+        <h3>Cadenas de texto (str)</h3>
+        <div class="code-wrap">
+          <div class="code-top">
+            <span class="code-lang">Python</span>
+            <span class="code-desc">strings y métodos</span>
+          </div>
+          <pre><span class="cm"># Definición con comillas simples, dobles o triples</span>
+nombre   <span class="op">=</span> <span class="st">"Python"</span>
+version  <span class="op">=</span> <span class="st">'3.13'</span>
+multi    <span class="op">=</span> <span class="st">"""Esto es un
+texto en varias
+líneas"""</span>
+
+<span class="cm"># F-strings: interpolación moderna (Python 3.6+)</span>
+mensaje  <span class="op">=</span> <span class="st">f"Usando {nombre} versión {version}"</span>
+<span class="bi">print</span>(mensaje)       <span class="cm"># Usando Python versión 3.13</span>
+
+<span class="cm"># Métodos de cadena</span>
+<span class="bi">print</span>(nombre.<span class="fn">upper</span>())        <span class="cm"># PYTHON</span>
+<span class="bi">print</span>(nombre.<span class="fn">lower</span>())        <span class="cm"># python</span>
+<span class="bi">print</span>(nombre.<span class="fn">replace</span>(<span class="st">"P"</span>, <span class="st">"J"</span>)) <span class="cm"># Jython</span>
+<span class="bi">print</span>(nombre.<span class="fn">startswith</span>(<span class="st">"Py"</span>)) <span class="cm"># True</span>
+<span class="bi">print</span>(<span class="bi">len</span>(nombre))           <span class="cm"># 6</span></pre>
+        </div>
+
+        <h3>Booleanos y NoneType</h3>
+        <div class="code-wrap">
+          <div class="code-top">
+            <span class="code-lang">Python</span>
+            <span class="code-desc">bool y None</span>
+          </div>
+          <pre><span class="cm"># Bool es subclase de int: True=1, False=0</span>
+activo   <span class="op">=</span> <span class="kw">True</span>
+cerrado  <span class="op">=</span> <span class="kw">False</span>
+
+<span class="bi">print</span>(<span class="kw">True</span> <span class="op">+</span> <span class="kw">True</span>)   <span class="cm"># 2</span>
+<span class="bi">print</span>(<span class="kw">True</span> <span class="op">*</span> <span class="nm">5</span>)     <span class="cm"># 5</span>
+
+<span class="cm"># None: ausencia de valor (similar a null en otros lenguajes)</span>
+resultado <span class="op">=</span> <span class="kw">None</span>
+<span class="bi">print</span>(resultado <span class="kw">is</span> <span class="kw">None</span>)  <span class="cm"># True  ← comparar con 'is', no '=='</span></pre>
+        </div>
+      </section>
+
+      <div class="sep-line"><span>§</span></div>
+
+      <!-- ══ SECCIÓN 5 ══ -->
+      <section id="sec-5" class="seccion">
+        <div class="seccion-header">
+          <span class="sec-num">05</span>
+          <div class="sec-titulo">Variables y operadores<small>Asignación y expresiones</small></div>
+        </div>
+
+        <p class="lead">En Python, una variable es simplemente una etiqueta que apunta a un objeto en memoria. No se declara su tipo: se asigna directamente.</p>
+
+        <h3>Asignación de variables</h3>
+        <div class="code-wrap">
+          <div class="code-top">
+            <span class="code-lang">Python</span>
+            <span class="code-desc">variables</span>
+          </div>
+          <pre><span class="cm"># Asignación simple</span>
+x <span class="op">=</span> <span class="nm">10</span>
+nombre <span class="op">=</span> <span class="st">"Ana"</span>
+
+<span class="cm"># Asignación múltiple</span>
+a, b, c <span class="op">=</span> <span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>
+
+<span class="cm"># Intercambio sin variable temporal</span>
+a, b <span class="op">=</span> b, a
+
+<span class="cm"># Asignación aumentada</span>
+x <span class="op">+=</span> <span class="nm">5</span>    <span class="cm"># x = x + 5</span>
+x <span class="op">*=</span> <span class="nm">2</span>    <span class="cm"># x = x * 2</span>
+x <span class="op">//=</span> <span class="nm">3</span>   <span class="cm"># división entera</span>
+
+<span class="cm"># Convención de nombres (snake_case)</span>
+nombre_completo <span class="op">=</span> <span class="st">"Guido van Rossum"</span>
+MAX_INTENTOS    <span class="op">=</span> <span class="nm">3</span>   <span class="cm"># constante (por convención, MAYÚSCULAS)</span></pre>
+        </div>
+
+        <h3>Operadores</h3>
+        <table>
+          <thead><tr><th>Categoría</th><th>Operadores</th><th>Ejemplo</th></tr></thead>
+          <tbody>
+            <tr><td>Aritméticos</td><td><code>+  -  *  /  //  %  **</code></td><td><code>2 ** 8</code> → 256</td></tr>
+            <tr><td>Comparación</td><td><code>==  !=  &lt;  &gt;  &lt;=  &gt;=</code></td><td><code>5 != 3</code> → True</td></tr>
+            <tr><td>Lógicos</td><td><code>and  or  not</code></td><td><code>True and False</code> → False</td></tr>
+            <tr><td>Identidad</td><td><code>is  is not</code></td><td><code>x is None</code></td></tr>
+            <tr><td>Pertenencia</td><td><code>in  not in</code></td><td><code>"a" in "Python"</code> → False</td></tr>
+            <tr><td>Bit a bit</td><td><code>&amp;  |  ^  ~  &lt;&lt;  &gt;&gt;</code></td><td><code>0b1010 &amp; 0b1100</code> → 8</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout">
+          <span class="callout-ico amarillo">clave</span>
+          <p>El operador <code>//</code> es <strong>división entera</strong> (descarta decimales) y <code>%</code> es <strong>módulo</strong> (resto de la división). Son distintos a <code>/</code> que siempre devuelve float.</p>
+        </div>
+      </section>
+
+      <div class="sep-line"><span>§</span></div>
+
+      <!-- ══ SECCIÓN 6 ══ -->
+      <section id="sec-6" class="seccion">
+        <div class="seccion-header">
+          <span class="sec-num">06</span>
+          <div class="sec-titulo">Control de flujo<small>Condicionales y ciclos</small></div>
+        </div>
+
+        <p class="lead">El control de flujo determina qué código se ejecuta y cuántas veces. Python usa la indentación para delimitar bloques, eliminando la necesidad de llaves o palabras clave de cierre.</p>
+
+        <h3>Condicionales: if / elif / else</h3>
+        <div class="code-wrap">
+          <div class="code-top">
+            <span class="code-lang">Python</span>
+            <span class="code-desc">condicionales</span>
+          </div>
+          <pre><span class="kw">def</span> <span class="fn">clasificar_nota</span>(nota):
+    <span class="kw">if</span> nota <span class="op">&gt;=</span> <span class="nm">90</span>:
+        <span class="kw">return</span> <span class="st">"Excelente"</span>
+    <span class="kw">elif</span> nota <span class="op">&gt;=</span> <span class="nm">70</span>:
+        <span class="kw">return</span> <span class="st">"Aprobado"</span>
+    <span class="kw">elif</span> nota <span class="op">&gt;=</span> <span class="nm">60</span>:
+        <span class="kw">return</span> <span class="st">"Suficiente"</span>
+    <span class="kw">else</span>:
+        <span class="kw">return</span> <span class="st">"Reprobado"</span>
+
+<span class="cm"># Condicional en una línea (ternario)</span>
+estado <span class="op">=</span> <span class="st">"mayor"</span> <span class="kw">if</span> edad <span class="op">&gt;=</span> <span class="nm">18</span> <span class="kw">else</span> <span class="st">"menor"</span>
+
+<span class="cm"># match-case: switch moderno (Python 3.10+)</span>
+<span class="kw">match</span> comando:
+    <span class="kw">case</span> <span class="st">"salir"</span>:
+        <span class="fn">salir_programa</span>()
+    <span class="kw">case</span> <span class="st">"ayuda"</span>:
+        <span class="fn">mostrar_ayuda</span>()
+    <span class="kw">case</span> _:
+        <span class="bi">print</span>(<span class="st">"Comando desconocido"</span>)</pre>
+        </div>
+
+        <h3>Ciclos: for y while</h3>
+        <div class="code-wrap">
+          <div class="code-top">
+            <span class="code-lang">Python</span>
+            <span class="code-desc">bucles</span>
+          </div>
+          <pre><span class="cm"># for: itera sobre cualquier iterable</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="bi">range</span>(<span class="nm">5</span>):           <span class="cm"># 0, 1, 2, 3, 4</span>
+    <span class="bi">print</span>(i)
+
+<span class="kw">for</span> letra <span class="kw">in</span> <span class="st">"Python"</span>:      <span class="cm"># itera caracteres</span>
+    <span class="bi">print</span>(letra)
+
+<span class="kw">for</span> idx, valor <span class="kw">in</span> <span class="bi">enumerate</span>([<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>]):
+    <span class="bi">print</span>(<span class="st">f"{idx}: {valor}"</span>)
+
+<span class="cm"># while: itera mientras se cumple condición</span>
+contador <span class="op">=</span> <span class="nm">0</span>
+<span class="kw">while</span> contador <span class="op">&lt;</span> <span class="nm">5</span>:
+    <span class="bi">print</span>(contador)
+    contador <span class="op">+=</span> <span class="nm">1</span>
+
+<span class="cm"># break, continue, else en bucles</span>
+<span class="kw">for</span> n <span class="kw">in</span> <span class="bi">range</span>(<span class="nm">10</span>):
+    <span class="kw">if</span> n <span class="op">==</span> <span class="nm">5</span>:
+        <span class="kw">break</span>             <span class="cm"># sale del bucle</span>
+    <span class="kw">if</span> n <span class="op">%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>:
+        <span class="kw">continue</span>          <span class="cm"># salta a la siguiente iteración</span>
+    <span class="bi">print</span>(n)
+<span class="kw">else</span>:                     <span class="cm"># se ejecuta si el for terminó sin break</span>
+    <span class="bi">print</span>(<span class="st">"Completado"</span>)</pre>
+        </div>
+      </section>
+
+      <div class="sep-line"><span>§</span></div>
+
+      <!-- ══ SECCIÓN 7 ══ -->
+      <section id="sec-7" class="seccion">
+        <div class="seccion-header">
+          <span class="sec-num">07</span>
+          <div class="sec-titulo">Funciones<small>Definición, argumentos y lambdas</small></div>
+        </div>
+
+        <p class="lead">Las funciones son bloques de código reutilizables que reciben entradas, realizan operaciones y devuelven resultados. En Python son ciudadanos de primera clase: se pueden asignar a variables, pasar como argumentos y devolver desde otras funciones.</p>
+
+        <div class="code-wrap">
+          <div class="code-top">
+            <span class="code-lang">Python</span>
+            <span class="code-desc">definición de funciones</span>
+          </div>
+          <pre><span class="cm"># Función básica con docstring</span>
+<span class="kw">def</span> <span class="fn">saludar</span>(nombre: <span class="bi">str</span>) <span class="op">-&gt;</span> <span class="bi">str</span>:
+    <span class="st">"""Devuelve un saludo personalizado."""</span>
+    <span class="kw">return</span> <span class="st">f"Hola, {nombre}!"</span>
+
+<span class="cm"># Parámetros con valor por defecto</span>
+<span class="kw">def</span> <span class="fn">potencia</span>(base, exponente<span class="op">=</span><span class="nm">2</span>):
+    <span class="kw">return</span> base <span class="op">**</span> exponente
+
+<span class="bi">print</span>(<span class="fn">potencia</span>(<span class="nm">3</span>))       <span class="cm"># 9  (usa exponente=2)</span>
+<span class="bi">print</span>(<span class="fn">potencia</span>(<span class="nm">2</span>, <span class="nm">8</span>))    <span class="cm"># 256</span>
+
+<span class="cm"># *args: número variable de argumentos posicionales</span>
+<span class="kw">def</span> <span class="fn">sumar</span>(<span class="op">*</span>numeros):
+    <span class="kw">return</span> <span class="bi">sum</span>(numeros)
+
+<span class="cm"># **kwargs: argumentos con nombre</span>
+<span class="kw">def</span> <span class="fn">perfil</span>(<span class="op">**</span>datos):
+    <span class="kw">for</span> clave, valor <span class="kw">in</span> datos.<span class="fn">items</span>():
+        <span class="bi">print</span>(<span class="st">f"{clave}: {valor}"</span>)
+
+<span class="fn">perfil</span>(nombre<span class="op">=</span><span class="st">"Ana"</span>, edad<span class="op">=</span><span class="nm">25</span>, ciudad<span class="op">=</span><span class="st">"CDMX"</span>)
+
+<span class="cm"># Lambda: función anónima de una sola expresión</span>
+cuadrado <span class="op">=</span> <span class="kw">lambda</span> x: x <span class="op">**</span> <span class="nm">2</span>
+doble    <span class="op">=</span> <span class="kw">lambda</span> x: x <span class="op">*</span> <span class="nm">2</span>
+
+numeros <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>]
+pares   <span class="op">=</span> <span class="bi">list</span>(<span class="bi">filter</span>(<span class="kw">lambda</span> x: x <span class="op">%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>, numeros))  <span class="cm"># [2, 4]</span></pre>
+        </div>
+
+        <div class="callout">
+          <span class="callout-ico verde">tip</span>
+          <p>Las <strong>type hints</strong> (<code>nombre: str</code>, <code>-&gt; str</code>) son opcionales pero muy recomendadas en Python 3. No afectan la ejecución, pero mejoran la documentación y permiten que herramientas como <code>mypy</code> detecten errores de tipos.</p>
+        </div>
+      </section>
+
+      <div class="sep-line"><span>§</span></div>
+
+      <!-- ══ SECCIÓN 8 ══ -->
+      <section id="sec-8" class="seccion">
+        <div class="seccion-header">
+          <span class="sec-num">08</span>
+          <div class="sec-titulo">Colecciones<small>Listas, tuplas, sets y diccionarios</small></div>
+        </div>
+
+        <p class="lead">Las colecciones son estructuras de datos que agrupan múltiples valores. Python tiene cuatro colecciones nativas con características bien diferenciadas.</p>
+
+        <div class="code-wrap">
+          <div class="code-top">
+            <span class="code-lang">Python</span>
+            <span class="code-desc">list — mutable, ordenada, permite duplicados</span>
+          </div>
+          <pre><span class="cm"># Lista: la colección más usada</span>
+frutas <span class="op">=</span> [<span class="st">"manzana"</span>, <span class="st">"banana"</span>, <span class="st">"mango"</span>]
+
+frutas.<span class="fn">append</span>(<span class="st">"uva"</span>)      <span class="cm"># agrega al final</span>
+frutas.<span class="fn">insert</span>(<span class="nm">0</span>, <span class="st">"kiwi"</span>)  <span class="cm"># agrega en posición</span>
+frutas.<span class="fn">remove</span>(<span class="st">"banana"</span>)  <span class="cm"># elimina por valor</span>
+frutas.<span class="fn">sort</span>()            <span class="cm"># ordena en lugar</span>
+
+<span class="cm"># List comprehension: forma pythónica de crear listas</span>
+cuadrados <span class="op">=</span> [x<span class="op">**</span><span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="bi">range</span>(<span class="nm">10</span>)]
+pares     <span class="op">=</span> [x <span class="kw">for</span> x <span class="kw">in</span> <span class="bi">range</span>(<span class="nm">20</span>) <span class="kw">if</span> x <span class="op">%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>]
+
+<span class="cm"># Slicing: sub-listas</span>
+<span class="bi">print</span>(frutas[<span class="nm">1</span>:<span class="nm">3</span>])    <span class="cm"># elementos 1 y 2</span>
+<span class="bi">print</span>(frutas[::<span class="op">-</span><span class="nm">1</span>])   <span class="cm"># lista al revés</span></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-top">
+            <span class="code-lang">Python</span>
+            <span class="code-desc">dict, tuple y set</span>
+          </div>
+          <pre><span class="cm"># Diccionario: clave-valor, ordenado (Python 3.7+)</span>
+persona <span class="op">=</span> {
+    <span class="st">"nombre"</span>: <span class="st">"Ana"</span>,
+    <span class="st">"edad"</span>:   <span class="nm">25</span>,
+    <span class="st">"ciudad"</span>: <span class="st">"CDMX"</span>
+}
+persona[<span class="st">"email"</span>] <span class="op">=</span> <span class="st">"ana@ejemplo.com"</span>
+edad <span class="op">=</span> persona.<span class="fn">get</span>(<span class="st">"edad"</span>, <span class="nm">0</span>)   <span class="cm"># valor por defecto si no existe</span>
+
+<span class="cm"># Dict comprehension</span>
+cuadrados_d <span class="op">=</span> {x: x<span class="op">**</span><span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="bi">range</span>(<span class="nm">5</span>)}
+
+<span class="cm"># Tupla: inmutable, más rápida que lista</span>
+coordenadas <span class="op">=</span> (<span class="nm">19.43</span>, <span class="op">-</span><span class="nm">99.13</span>)   <span class="cm"># latitud, longitud CDMX</span>
+lat, lon    <span class="op">=</span> coordenadas          <span class="cm"># desempaquetado</span>
+
+<span class="cm"># Set: colección sin duplicados, sin orden</span>
+colores  <span class="op">=</span> {<span class="st">"rojo"</span>, <span class="st">"verde"</span>, <span class="st">"azul"</span>, <span class="st">"rojo"</span>}  <span class="cm"># rojo aparece una vez</span>
+colores2 <span class="op">=</span> {<span class="st">"verde"</span>, <span class="st">"amarillo"</span>}
+comunes  <span class="op">=</span> colores <span class="op">&amp;</span> colores2    <span class="cm"># intersección</span>
+todos    <span class="op">=</span> colores <span class="op">|</span> colores2    <span class="cm"># unión</span></pre>
+        </div>
+
+        <table>
+          <thead><tr><th>Colección</th><th>Mutable</th><th>Ordenada</th><th>Duplicados</th><th>Sintaxis</th></tr></thead>
+          <tbody>
+            <tr><td>list</td><td>✓</td><td>✓</td><td>✓</td><td><code>[1, 2, 3]</code></td></tr>
+            <tr><td>tuple</td><td>✗</td><td>✓</td><td>✓</td><td><code>(1, 2, 3)</code></td></tr>
+            <tr><td>set</td><td>✓</td><td>✗</td><td>✗</td><td><code>{1, 2, 3}</code></td></tr>
+            <tr><td>dict</td><td>✓</td><td>✓*</td><td>✗ en claves</td><td><code>{"k": v}</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="sep-line"><span>§</span></div>
+
+      <!-- ══ SECCIÓN 9 ══ -->
+      <section id="sec-9" class="seccion">
+        <div class="seccion-header">
+          <span class="sec-num">09</span>
+          <div class="sec-titulo">Programación Orientada a Objetos<small>Clases, herencia y métodos</small></div>
+        </div>
+
+        <p class="lead">Python soporta POO de forma completa. Una clase es una plantilla para crear objetos que encapsulan datos (atributos) y comportamiento (métodos).</p>
+
+        <div class="code-wrap">
+          <div class="code-top">
+            <span class="code-lang">Python</span>
+            <span class="code-desc">clase, herencia y métodos especiales</span>
+          </div>
+          <pre><span class="kw">class</span> <span class="cl">Animal</span>:
+    <span class="cm">"""Clase base que representa un animal."""</span>
+
+    especie_dominante <span class="op">=</span> <span class="st">"Homo sapiens"</span>  <span class="cm"># atributo de clase</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, nombre: <span class="bi">str</span>, sonido: <span class="bi">str</span>):
+        <span class="kw">self</span>.nombre <span class="op">=</span> nombre     <span class="cm"># atributo de instancia</span>
+        <span class="kw">self</span>.sonido <span class="op">=</span> sonido
+
+    <span class="kw">def</span> <span class="fn">hablar</span>(<span class="kw">self</span>) <span class="op">-&gt;</span> <span class="bi">str</span>:
+        <span class="kw">return</span> <span class="st">f"{self.nombre} dice: {self.sonido}!"</span>
+
+    <span class="kw">def</span> <span class="fn">__str__</span>(<span class="kw">self</span>) <span class="op">-&gt;</span> <span class="bi">str</span>:   <span class="cm"># para print(objeto)</span>
+        <span class="kw">return</span> <span class="st">f"Animal({self.nombre})"</span>
+
+    <span class="kw">def</span> <span class="fn">__repr__</span>(<span class="kw">self</span>) <span class="op">-&gt;</span> <span class="bi">str</span>:  <span class="cm"># representación técnica</span>
+        <span class="kw">return</span> <span class="st">f"Animal(nombre={self.nombre!r})"</span>
+
+
+<span class="cm"># Herencia: Perro extiende Animal</span>
+<span class="kw">class</span> <span class="cl">Perro</span>(<span class="cl">Animal</span>):
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, nombre: <span class="bi">str</span>, raza: <span class="bi">str</span>):
+        <span class="bi">super</span>().<span class="fn">__init__</span>(nombre, <span class="st">"Guau"</span>)  <span class="cm"># llama al padre</span>
+        <span class="kw">self</span>.raza <span class="op">=</span> raza
+
+    <span class="kw">def</span> <span class="fn">traer_pelota</span>(<span class="kw">self</span>) <span class="op">-&gt;</span> <span class="bi">str</span>:
+        <span class="kw">return</span> <span class="st">f"{self.nombre} trae la pelota."</span>
+
+
+<span class="cm"># Uso</span>
+mi_perro <span class="op">=</span> <span class="cl">Perro</span>(<span class="st">"Rex"</span>, <span class="st">"Labrador"</span>)
+<span class="bi">print</span>(mi_perro.<span class="fn">hablar</span>())          <span class="cm"># Rex dice: Guau!</span>
+<span class="bi">print</span>(mi_perro.<span class="fn">traer_pelota</span>())   <span class="cm"># Rex trae la pelota.</span>
+<span class="bi">print</span>(<span class="bi">isinstance</span>(mi_perro, <span class="cl">Animal</span>)) <span class="cm"># True</span></pre>
+        </div>
+
+        <div class="callout">
+          <span class="callout-ico rojo">clave</span>
+          <p>El primer parámetro de cualquier método de instancia es <strong><code>self</code></strong>, que hace referencia al objeto actual. No es una palabra reservada, es una convención universal: <em>siempre</em> se usa <code>self</code>.</p>
+        </div>
+      </section>
+
+      <div class="sep-line"><span>§</span></div>
+
+      <!-- ══ SECCIÓN 10 ══ -->
+      <section id="sec-10" class="seccion">
+        <div class="seccion-header">
+          <span class="sec-num">10</span>
+          <div class="sec-titulo">Módulos y librerías<small>El ecosistema Python</small></div>
+        </div>
+
+        <p class="lead">El ecosistema de Python es uno de los más grandes en el mundo del software. Con más de 500,000 paquetes en PyPI, existe una librería para casi cualquier tarea imaginable.</p>
+
+        <h3>Módulos de la biblioteca estándar</h3>
+        <div class="code-wrap">
+          <div class="code-top">
+            <span class="code-lang">Python</span>
+            <span class="code-desc">stdlib</span>
+          </div>
+          <pre><span class="kw">import</span> os
+<span class="kw">import</span> sys
+<span class="kw">import</span> math
+<span class="kw">import</span> random
+<span class="kw">import</span> datetime
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+<span class="kw">from</span> collections <span class="kw">import</span> Counter, defaultdict
+
+<span class="cm"># os: interacción con el sistema operativo</span>
+<span class="bi">print</span>(os.<span class="fn">getcwd</span>())                    <span class="cm"># directorio actual</span>
+archivos <span class="op">=</span> os.<span class="fn">listdir</span>(<span class="st">"."</span>)
+
+<span class="cm"># math: funciones matemáticas</span>
+<span class="bi">print</span>(math.<span class="fn">sqrt</span>(<span class="nm">144</span>))               <span class="cm"># 12.0</span>
+<span class="bi">print</span>(math.<span class="fn">floor</span>(<span class="nm">3.9</span>))              <span class="cm"># 3</span>
+
+<span class="cm"># datetime: fechas y tiempos</span>
+hoy <span class="op">=</span> datetime.date.<span class="fn">today</span>()
+ahora <span class="op">=</span> datetime.datetime.<span class="fn">now</span>()
+
+<span class="cm"># Counter: contar elementos</span>
+texto <span class="op">=</span> <span class="st">"python es un lenguaje de programacion"</span>
+freq  <span class="op">=</span> Counter(texto.<span class="fn">split</span>())       <span class="cm"># frecuencia de palabras</span></pre>
+        </div>
+
+        <h3>Librerías de terceros más importantes</h3>
+        <div class="cards">
+          <div class="card">
+            <div class="card-titulo">NumPy</div>
+            <p>Cómputo numérico. Arrays multidimensionales y álgebra lineal de alto rendimiento.</p>
+          </div>
+          <div class="card">
+            <div class="card-titulo">Pandas</div>
+            <p>Análisis de datos. DataFrames para manipular tablas como si fueran hojas de cálculo.</p>
+          </div>
+          <div class="card">
+            <div class="card-titulo">Matplotlib</div>
+            <p>Visualización de datos. Gráficas, histogramas, scatter plots y más.</p>
+          </div>
+          <div class="card">
+            <div class="card-titulo">TensorFlow / PyTorch</div>
+            <p>Deep learning. Redes neuronales y aprendizaje automático a escala.</p>
+          </div>
+          <div class="card">
+            <div class="card-titulo">Django / FastAPI</div>
+            <p>Frameworks web. Creación de APIs REST y aplicaciones web completas.</p>
+          </div>
+          <div class="card">
+            <div class="card-titulo">Requests</div>
+            <p>HTTP para humanos. Hacer peticiones a APIs web con mínimo código.</p>
+          </div>
+        </div>
+
+        <div class="callout">
+          <span class="callout-ico azul">nota</span>
+          <p>Para instalar cualquier librería de terceros usa <strong><code>pip install nombre_libreria</code></strong>. Para proyectos serios, siempre crea un entorno virtual: <code>python -m venv venv</code> para aislar las dependencias de cada proyecto.</p>
+        </div>
+      </section>
+
+      <div class="sep-line"><span>§</span></div>
+
+      <!-- ══ SECCIÓN 11 ══ -->
+      <section id="sec-11" class="seccion">
+        <div class="seccion-header">
+          <span class="sec-num">11</span>
+          <div class="sec-titulo">Manejo de errores<small>Excepciones y depuración</small></div>
+        </div>
+
+        <p class="lead">En Python, los errores en tiempo de ejecución se llaman <em>excepciones</em>. El manejo de excepciones permite que el programa responda a situaciones inesperadas de forma controlada, en lugar de terminar abruptamente.</p>
+
+        <div class="code-wrap">
+          <div class="code-top">
+            <span class="code-lang">Python</span>
+            <span class="code-desc">try / except / finally</span>
+          </div>
+          <pre><span class="cm"># Estructura completa de manejo de excepciones</span>
+<span class="kw">try</span>:
+    numero   <span class="op">=</span> <span class="bi">int</span>(<span class="bi">input</span>(<span class="st">"Ingresa un número: "</span>))
+    resultado <span class="op">=</span> <span class="nm">100</span> <span class="op">/</span> numero
+
+<span class="kw">except</span> ValueError:
+    <span class="bi">print</span>(<span class="st">"Error: Debes ingresar un número entero."</span>)
+
+<span class="kw">except</span> ZeroDivisionError:
+    <span class="bi">print</span>(<span class="st">"Error: No se puede dividir entre cero."</span>)
+
+<span class="kw">except</span> Exception <span class="kw">as</span> e:
+    <span class="bi">print</span>(<span class="st">f"Error inesperado: {e}"</span>)
+
+<span class="kw">else</span>:                          <span class="cm"># se ejecuta si NO hubo excepción</span>
+    <span class="bi">print</span>(<span class="st">f"Resultado: {resultado}"</span>)
+
+<span class="kw">finally</span>:                       <span class="cm"># se ejecuta SIEMPRE</span>
+    <span class="bi">print</span>(<span class="st">"Fin del programa."</span>)
+
+
+<span class="cm"># Lanzar excepciones propias</span>
+<span class="kw">class</span> <span class="cl">EdadInvalidaError</span>(ValueError):
+    <span class="kw">pass</span>
+
+<span class="kw">def</span> <span class="fn">validar_edad</span>(edad: <span class="bi">int</span>):
+    <span class="kw">if</span> edad <span class="op">&lt;</span> <span class="nm">0</span> <span class="kw">or</span> edad <span class="op">&gt;</span> <span class="nm">150</span>:
+        <span class="kw">raise</span> <span class="cl">EdadInvalidaError</span>(<span class="st">f"Edad {edad} fuera de rango."</span>)
+    <span class="kw">return</span> <span class="kw">True</span></pre>
+        </div>
+
+        <table>
+          <thead><tr><th>Excepción</th><th>Causa típica</th></tr></thead>
+          <tbody>
+            <tr><td>ValueError</td><td>Tipo correcto pero valor inválido: <code>int("abc")</code></td></tr>
+            <tr><td>TypeError</td><td>Operación en tipo incorrecto: <code>"3" + 3</code></td></tr>
+            <tr><td>ZeroDivisionError</td><td>División entre cero</td></tr>
+            <tr><td>IndexError</td><td>Índice fuera de rango en lista</td></tr>
+            <tr><td>KeyError</td><td>Clave inexistente en diccionario</td></tr>
+            <tr><td>FileNotFoundError</td><td>Archivo no encontrado al abrir</td></tr>
+            <tr><td>ImportError</td><td>Módulo no instalado o no encontrado</td></tr>
+            <tr><td>AttributeError</td><td>Acceso a atributo/método que no existe</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="sep-line"><span>§</span></div>
+
+      <!-- ══ SECCIÓN 12 ══ -->
+      <section id="sec-12" class="seccion">
+        <div class="seccion-header">
+          <span class="sec-num">12</span>
+          <div class="sec-titulo">Aplicaciones reales<small>¿Dónde se usa Python?</small></div>
+        </div>
+
+        <p class="lead">Python no es solo un lenguaje de aprendizaje: impulsa algunos de los sistemas más complejos del mundo. Su versatilidad lo hace dominante en sectores muy distintos.</p>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-titulo">Inteligencia Artificial</div>
+            <p>TensorFlow, PyTorch y Scikit-learn son los frameworks líderes de IA/ML, todos en Python. GPT, Gemini y otros LLMs se entrenan con código Python.</p>
+          </div>
+          <div class="card">
+            <div class="card-titulo">Ciencia de Datos</div>
+            <p>Pandas + NumPy + Matplotlib son el stack estándar de análisis de datos en empresas y academia. Jupyter Notebooks como entorno interactivo.</p>
+          </div>
+          <div class="card">
+            <div class="card-titulo">Desarrollo Web</div>
+            <p>Instagram, Pinterest y YouTube usan Django. Dropbox, Netflix y Uber usan Python en sus backends y microservicios.</p>
+          </div>
+          <div class="card">
+            <div class="card-titulo">Automatización</div>
+            <p>Scripts para tareas repetitivas, web scraping con Selenium/BeautifulSoup, bots, generación de reportes automáticos.</p>
+          </div>
+          <div class="card">
+            <div class="card-titulo">DevOps & Cloud</div>
+            <p>AWS, Google Cloud y Azure tienen SDKs en Python. Ansible, Salt y otras herramientas de infraestructura están escritas en Python.</p>
+          </div>
+          <div class="card">
+            <div class="card-titulo">Ciencia & Academia</div>
+            <p>La NASA, el CERN y el MIT usan Python para análisis de datos científicos, simulaciones y modelos computacionales.</p>
+          </div>
+        </div>
+
+        <blockquote>
+          "Python se ha convertido en la lingua franca de la ciencia de datos y la inteligencia artificial. Si quieres trabajar en estas áreas, Python no es opcional."
+          <cite>— Índice TIOBE, 2024 — Python en el puesto #1 por tercer año consecutivo</cite>
+        </blockquote>
+      </section>
+
+      <div class="sep-line"><span>§</span></div>
+
+      <!-- ══ SECCIÓN 13 ══ -->
+      <section id="sec-13" class="seccion">
+        <div class="seccion-header">
+          <span class="sec-num">13</span>
+          <div class="sec-titulo">Conclusiones<small>Resumen y próximos pasos</small></div>
+        </div>
+
+        <p class="lead">Python es mucho más que un lenguaje de programación: es una filosofía de desarrollo que prioriza la claridad, la legibilidad y la productividad humana sobre la eficiencia máquina.</p>
+
+        <div class="resumen-grid">
+          <div class="resumen-item">
+            <h4>Lo que aprendimos</h4>
+            <ul>
+              <li>Historia y origen del lenguaje</li>
+              <li>Tipos de datos nativos</li>
+              <li>Variables y operadores</li>
+              <li>Estructuras de control</li>
+              <li>Funciones y lambdas</li>
+              <li>Colecciones (list, dict, set, tuple)</li>
+              <li>Programación orientada a objetos</li>
+              <li>Módulos y ecosistema</li>
+              <li>Manejo de excepciones</li>
+            </ul>
+          </div>
+          <div class="resumen-item">
+            <h4>Próximos pasos</h4>
+            <ul>
+              <li>Practica en <code>python.org/shell</code></li>
+              <li>Instala Python y VSCode localmente</li>
+              <li>Completa "Python for Everybody" (Coursera)</li>
+              <li>Aprende un framework: Django o FastAPI</li>
+              <li>Explora Pandas para datos</li>
+              <li>Participa en proyectos open source</li>
+              <li>Construye un proyecto personal real</li>
+              <li>Aprende testing con <code>pytest</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="terminal-demo">
+          <div><span class="prompt"># Primer programa Python — el inicio de todo</span></div>
+          <div>&nbsp;</div>
+          <div><span class="kw">print</span>(<span class="st" style="color:#ffe066;">"¡Hola, Mundo!"</span>)</div>
+          <div>&nbsp;</div>
+          <div><span class="out">¡Hola, Mundo!</span></div>
+          <div>&nbsp;</div>
+          <div><span class="prompt"># Este fue el primer programa que Guido escribió también.</span></div>
+          <div><span class="prompt"># Todo comienza aquí. </span><span class="cursor"></span></div>
+        </div>
+
+        <div class="callout">
+          <span class="callout-ico verde">fin</span>
+          <p>Esta investigación cubre los conceptos fundamentales de Python 3. El lenguaje es tan extenso que siempre habrá más por aprender: decoradores, generadores, programación asíncrona, metaclases, etc. <strong>La mejor forma de aprender es construir cosas reales.</strong></p>
+        </div>
+      </section>
+
+    </main>
+  </div><!-- fin contenido -->
+
+</div><!-- fin layout -->
+
+</body>
+</html>
